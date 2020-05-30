@@ -229,7 +229,7 @@ package body Parser is
                 when Ret => Put_Line("Ret");
                     
                 -- Identifiers and literals
-                when Int => Put(Current.Int_Field1, 0); New_Line;
+                when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
                     
                 -- Operators
