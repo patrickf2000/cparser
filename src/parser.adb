@@ -32,13 +32,15 @@ package body Parser is
                 when Num => 
                     Node := Ast_Int;
                     Node.Int_Field1 := Integer'Value(To_String(Buf));
+                    
+                when Id => Node := Ast_Id(Buf);
                 
                 when others => null;
                 end case;
             end Build_Node;
             
         begin
-            Position := Find(Ast, Parent_Node);
+            Position := Find_In_Subtree(Position, Parent_Node);
             
             while CurrentToken /= SemiColon loop
                 Build_Node;
@@ -82,9 +84,8 @@ package body Parser is
         end Build_Var_Dec;
         
         procedure Build_Return is
-            Ret_Node : Ast_Node;
+            Ret_Node : Ast_Node := Ast_Ret;
         begin
-            Ret_Node.Node_Type := Ret;
             Append_Child(Ast, Position, Ret_Node);
             Build_Children(Ret_Node);
         end Build_Return;
@@ -172,6 +173,7 @@ package body Parser is
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
                 when Int => Put(Current.Int_Field1, 0); New_Line;
+                when Id => Put_Line("ID: " & To_String(Current.Name));
                 when others => Put_Line("??");
             end case;
         end;

@@ -37,6 +37,14 @@ package body Ast is
         return Node;
     end Ast_Var_Dec;
     
+    -- Return an integer
+    function Ast_Ret return Ast_Node is
+        Node : Ast_Node;
+    begin
+        Node.Node_Type := Ret;
+        return Node;
+    end Ast_Ret;
+    
     -- Represents an integer
     function Ast_Int return Ast_Node is
         Node : Ast_Node;
@@ -44,5 +52,14 @@ package body Ast is
         Node.Node_Type := Int;
         return Node;
     end Ast_Int;
+    
+    -- Represents an ID
+    function Ast_Id(Name : in Unbounded_String) return Ast_Node is
+        Node : Ast_Node;
+    begin
+        Node.Node_Type := Id;
+        Node.Name := Name;
+        return Node;
+    end Ast_Id;
 
 end Ast;

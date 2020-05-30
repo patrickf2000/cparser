@@ -8,7 +8,7 @@ package Ast is
 
     -- Represents node types
     type Ast_Type is (None, Scope, Func, VarDec, VarAssign, Ret,
-        Int);
+        Id, Int);
 
     -- The base AST node
     type Ast_Node is record
@@ -22,5 +22,7 @@ package Ast is
     function Ast_Func(Name : in Unbounded_String) return Ast_Node;
     function Ast_Var_Assign(Name : in Unbounded_String) return Ast_Node;
     function Ast_Var_Dec(Name : in Unbounded_String) return Ast_Node;
+    function Ast_Ret return Ast_Node;
     function Ast_Int return Ast_Node;
+    function Ast_Id(Name : in Unbounded_String) return Ast_Node;
 end Ast;
