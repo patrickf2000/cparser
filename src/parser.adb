@@ -19,20 +19,38 @@ package body Parser is
         Position : Cursor := Ast.Root;
         Root : Ast_Node := Ast_Global;
         
-        -- Builds an AST node based on the current position
-        function Build_Node return Ast_Node is
+        -- Builds AST node until the end of an expression
+        procedure Build_Children(Parent_Node : Ast_Node) is
+            
+            -- Local variables
             Node : Ast_Node;
-        begin
-            case CurrentToken is
+            
+            -- Builds an AST node based on the current position
+            procedure Build_Node is
+            begin
+                case CurrentToken is
                 when Num => 
                     Node := Ast_Int;
                     Node.Int_Field1 := Integer'Value(To_String(Buf));
                 
                 when others => null;
-            end case;
+                end case;
+            end Build_Node;
             
-            return Node;
-        end Build_Node;
+        begin
+            Position := Find(Ast, Parent_Node);
+            
+            while CurrentToken /= SemiColon loop
+                Build_Node;
+                if Node.Node_Type /= None then
+                    Append_Child(Ast, Position, Node);
+                end if;
+                
+                CurrentToken := Get_Token(File, Buf);
+            end loop;
+            
+            Position := Parent(Position);
+        end Build_Children;
         
         -- Builds function declarations
         procedure Build_Func(Data_Type : Token; Name : Unbounded_String) is
@@ -50,21 +68,9 @@ package body Parser is
         -- Builds variable assignments
         procedure Build_Var_Assign(Name : Unbounded_String) is
             Var_Assign : Ast_Node := Ast_Var_Assign(Name);
-            Node : Ast_Node;
         begin
             Append_Child(Ast, Position, Var_Assign);
-            Position := Find(Ast, Var_Assign);
-            
-            while CurrentToken /= SemiColon loop
-                Node := Build_Node;
-                if Node.Node_Type /= None then
-                    Append_Child(Ast, Position, Node);
-                end if;
-                
-                CurrentToken := Get_Token(File, Buf);
-            end loop;
-            
-            Position := Parent(Position);
+            Build_Children(Var_Assign);
         end Build_Var_Assign;
         
         -- Builds variable declarations
@@ -74,6 +80,14 @@ package body Parser is
             Append_Child(Ast, Position, Var_Dec);
             Build_Var_Assign(Name);
         end Build_Var_Dec;
+        
+        procedure Build_Return is
+            Ret_Node : Ast_Node;
+        begin
+            Ret_Node.Node_Type := Ret;
+            Append_Child(Ast, Position, Ret_Node);
+            Build_Children(Ret_Node);
+        end Build_Return;
         
     -- The main parsing area
     begin
@@ -109,6 +123,9 @@ package body Parser is
                     
                 -- End blck
                 when RCBrace => Position := Parent(Position);
+                
+                -- Return statements
+                when Ret => Build_Return;
                 
                 -- TODO: We need a syntax error here
                 when others => null;

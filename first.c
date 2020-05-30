@@ -7,4 +7,5 @@ int main() {
 
 int swap() {
     int z = 20;
+    return z;
 }
