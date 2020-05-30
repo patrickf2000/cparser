@@ -34,6 +34,11 @@ package body Parser is
                     Node.Int_Field1 := Integer'Value(To_String(Buf));
                     
                 when Id => Node := Ast_Id(Buf);
+                    
+                when Plus => Node.Node_Type := Add;
+                when Minus => Node.Node_Type := Sub;
+                when Mul => Node.Node_Type := Mul;
+                when Div => Node.Node_Type := Div;
                 
                 when others => null;
                 end case;
@@ -167,13 +172,24 @@ package body Parser is
             end loop;
             
             case Current.Node_Type is
+                -- Keywords
                 when Scope => Put_Line("Scope");
                 when Func => Print_Func;
                 when VarDec => Print_Var(True);
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
+                    
+                -- Identifiers and literals
                 when Int => Put(Current.Int_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
+                    
+                -- Operators
+                when Add => Put_Line("Op: +");
+                when Sub => Put_Line("Op: -");
+                when Mul => Put_Line("Op: *");
+                when Div => Put_Line("Op: /");
+                    
+                -- All others
                 when others => Put_Line("??");
             end case;
         end;

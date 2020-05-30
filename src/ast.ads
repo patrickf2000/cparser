@@ -8,6 +8,7 @@ package Ast is
 
     -- Represents node types
     type Ast_Type is (None, Scope, Func, VarDec, VarAssign, Ret,
+        Add, Sub, Mul, Div,
         Id, Int);
 
     -- The base AST node

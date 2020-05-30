@@ -5,6 +5,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package Lex is
     type Token is (None, Eof, NewLn, Id, Num,
         LParen, RParen, LCBrace, RCBrace, SemiColon, Assign,
+        Plus, Minus, Mul, Div,           
         Int, Ret, Syscall);
         
     -- Global control variables needed by the lexer

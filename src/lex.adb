@@ -51,6 +51,10 @@ package body Lex is
                 when '}' => return RCBrace;
                 when ';' => return SemiColon;
                 when '=' => return Assign;
+                when '+' => return Plus;
+                when '-' => return Minus;
+                when '*' => return Mul;
+                when '/' => return Div;
                 when others => return None;
             end case;
         end To_Token;
@@ -83,7 +87,8 @@ package body Lex is
                         return TT;
                     end if;
                     
-                when '(' | ')' | '{' | '}' | '=' | ';' =>
+                when '(' | ')' | '{' | '}' | '=' | ';' |
+                    '+' | '-' | '*' | '/' =>
                     TT := To_Token(C);
                     if Length(Buf) > 0 then
                         NextToken := TT;
