@@ -5,6 +5,8 @@ int main() {
 	x = 30;
 	swap();
 	
+	x = 2 * swap() + 9;
+	
 	return 7;
 }
 

@@ -3,6 +3,12 @@ with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Lex is
+    
+    -- Pushes back a lexical token
+    procedure Unget_Token(T : Token) is
+    begin
+        UndoToken := T;
+    end Unget_Token;
 
     --Gets a lexical token
     function Get_Token(File : File_Type; Buf : out Unbounded_String) return Token is
@@ -64,6 +70,12 @@ package body Lex is
         if Cls then
             Set_Unbounded_String(Buf, "");
             Cls := False;
+        end if;
+        
+        if UndoToken /= None then
+            TT := UndoToken;
+            UndoToken := None;
+            return TT;
         end if;
         
         if End_Of_File(File) then

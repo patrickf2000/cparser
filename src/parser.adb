@@ -19,8 +19,12 @@ package body Parser is
         Position : Cursor := Ast.Root;
         Root : Ast_Node := Ast_Global;
         
+        -- Forward declarations
+        procedure Build_Func_Call(Name : Unbounded_String);
+        
         -- Builds AST node until the end of an expression
-        procedure Build_Children(Parent_Node : Ast_Node) is
+        procedure Build_Children(Parent_Node : Ast_Node; 
+                                 Stop_Token : Token := SemiColon) is
             
             -- Local variables
             Node : Ast_Node;
@@ -33,7 +37,19 @@ package body Parser is
                     Node := Ast_Int;
                     Node.Int_Field1 := Integer'Value(To_String(Buf));
                     
-                when Id => Node := Ast_Id(Buf);
+                when Id =>
+                    declare
+                        Name : Unbounded_String := Buf;
+                    begin
+                        CurrentToken := Get_Token(File, Buf);
+                        
+                        if CurrentToken = LParen then
+                            Build_Func_Call(Name);
+                        else
+                            Node := Ast_Id(Name);
+                            Unget_Token(CurrentToken);
+                        end if;
+                    end;
                     
                 when Plus => Node.Node_Type := Add;
                 when Minus => Node.Node_Type := Sub;
@@ -47,7 +63,7 @@ package body Parser is
         begin
             Position := Find_In_Subtree(Position, Parent_Node);
             
-            while CurrentToken /= SemiColon loop
+            while CurrentToken /= Stop_Token loop
                 Build_Node;
                 if Node.Node_Type /= None then
                     Append_Child(Ast, Position, Node);
@@ -77,7 +93,7 @@ package body Parser is
             Func : Ast_Node := Ast_Func_Call(Name);
         begin
             Append_Child(Ast, Position, Func);
-            Build_Children(Func);
+            Build_Children(Func, RParen);
         end Build_Func_Call;
         
         -- Builds variable assignments

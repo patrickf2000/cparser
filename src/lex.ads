@@ -10,7 +10,9 @@ package Lex is
         
     -- Global control variables needed by the lexer
     NextToken : Token := None;
+    UndoToken : Token := None;
     Cls : Boolean := False;
         
+    procedure Unget_Token(T : Token);
     function Get_Token(File : File_Type; Buf : out Unbounded_String) return Token;
 end Lex;
