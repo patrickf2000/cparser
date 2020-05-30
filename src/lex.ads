@@ -1,0 +1,15 @@
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
+--Lex package declaration
+package Lex is
+    type Token is (None, Eof, NewLn, Id, Num,
+        LParen, RParen, LCBrace, RCBrace, SemiColon, Assign,
+        Int, Ret, Syscall);
+        
+    -- Global control variables needed by the lexer
+    NextToken : Token := None;
+    Cls : Boolean := False;
+        
+    function Get_Token(File : File_Type; Buf : out Unbounded_String) return Token;
+end Lex;
