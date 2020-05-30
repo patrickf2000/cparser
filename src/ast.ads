@@ -10,10 +10,14 @@ package Ast is
     type Ast_Type is (None, Scope, Func, VarDec, VarAssign, Ret,
         Add, Sub, Mul, Div,
         Id, Int);
+    
+    -- Unique identifier
+    UID : Integer := 1;
 
     -- The base AST node
     type Ast_Node is record
         Node_Type : Ast_Type := None;
+        UID : Integer := 1;
         Name : Unbounded_String;
         Int_Field1 : Integer := 0;
     end record;

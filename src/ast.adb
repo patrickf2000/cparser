@@ -6,6 +6,8 @@ package body Ast is
     function Ast_Global return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
+        Node.UID := UID;
         Node.Node_Type := Scope;
         return Node;
     end Ast_Global;
@@ -14,6 +16,8 @@ package body Ast is
     function Ast_Func(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
+        Node.UID := UID;
         Node.Node_Type := Func;
         Node.Name := Name;
         return Node;
@@ -23,8 +27,10 @@ package body Ast is
     function Ast_Var_Assign(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
         Node.Node_Type := VarAssign;
         Node.Name := Name;
+        Node.UID := UID;
         return Node;
     end Ast_Var_Assign;
     
@@ -32,8 +38,10 @@ package body Ast is
     function Ast_Var_Dec(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
         Node.Node_Type := VarDec;
         Node.Name := Name;
+        Node.UID := UID;
         return Node;
     end Ast_Var_Dec;
     
@@ -41,6 +49,8 @@ package body Ast is
     function Ast_Ret return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
+        Node.UID := UID;
         Node.Node_Type := Ret;
         return Node;
     end Ast_Ret;
@@ -49,6 +59,8 @@ package body Ast is
     function Ast_Int return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
+        Node.UID := UID;
         Node.Node_Type := Int;
         return Node;
     end Ast_Int;
@@ -57,6 +69,8 @@ package body Ast is
     function Ast_Id(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;
     begin
+        UID := UID + 1;
+        Node.UID := UID;
         Node.Node_Type := Id;
         Node.Name := Name;
         return Node;

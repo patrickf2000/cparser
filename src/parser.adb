@@ -127,6 +127,23 @@ package body Parser is
                         end if;
                     end;
                     
+                    -- Could be variable assignment or function call
+                when Id =>
+                    declare
+                        Name : Unbounded_String := Buf;
+                    begin
+                        CurrentToken := Get_Token(File, Buf);
+                        
+                        if CurrentToken = LParen then
+                            Put_Line("Func call!!");
+                        elsif CurrentToken = Assign then
+                            Build_Var_Assign(Name);
+                        else
+                            -- TODO: SYNTAX ERROR
+                            Put_Line("SYNTAX ERROR");
+                        end if;
+                    end;
+                    
                 -- End blck
                 when RCBrace => Position := Parent(Position);
                 
