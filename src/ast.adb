@@ -23,6 +23,17 @@ package body Ast is
         return Node;
     end Ast_Func;
     
+    -- Creates a function call node
+    function Ast_Func_Call(Name : in Unbounded_String) return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Func_Call;
+        Node.Name := Name;
+        return Node;
+    end Ast_Func_Call;
+    
     -- Creates a variable assignment node
     function Ast_Var_Assign(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;

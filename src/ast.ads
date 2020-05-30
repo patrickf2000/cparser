@@ -7,7 +7,8 @@ with Ada.Containers; use Ada.Containers;
 package Ast is
 
     -- Represents node types
-    type Ast_Type is (None, Scope, Func, VarDec, VarAssign, Ret,
+    type Ast_Type is (None, Scope, Func, Func_Call, Ret, 
+        VarDec, VarAssign,
         Add, Sub, Mul, Div,
         Id, Int);
     
@@ -25,6 +26,7 @@ package Ast is
     -- Helper functions
     function Ast_Global return Ast_Node;
     function Ast_Func(Name : in Unbounded_String) return Ast_Node;
+    function Ast_Func_Call(Name : in Unbounded_String) return Ast_Node;
     function Ast_Var_Assign(Name : in Unbounded_String) return Ast_Node;
     function Ast_Var_Dec(Name : in Unbounded_String) return Ast_Node;
     function Ast_Ret return Ast_Node;

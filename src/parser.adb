@@ -72,6 +72,14 @@ package body Parser is
             Position := Find(Ast, Func);
         end Build_Func;
         
+        -- Build function calls
+        procedure Build_Func_Call(Name : Unbounded_String) is
+            Func : Ast_Node := Ast_Func_Call(Name);
+        begin
+            Append_Child(Ast, Position, Func);
+            Build_Children(Func);
+        end Build_Func_Call;
+        
         -- Builds variable assignments
         procedure Build_Var_Assign(Name : Unbounded_String) is
             Var_Assign : Ast_Node := Ast_Var_Assign(Name);
@@ -135,7 +143,7 @@ package body Parser is
                         CurrentToken := Get_Token(File, Buf);
                         
                         if CurrentToken = LParen then
-                            Put_Line("Func call!!");
+                            Build_Func_Call(Name);
                         elsif CurrentToken = Assign then
                             Build_Var_Assign(Name);
                         else
@@ -170,6 +178,13 @@ package body Parser is
             Put_Line("Func " & Name);
         end Print_Func;
         
+        -- Prints a function call
+        procedure Print_Func_Call is
+            Name : String := To_String(Current.Name);
+        begin
+            Put_Line("FuncCall " & Name);
+        end Print_Func_Call;
+        
         -- Prints a variable declaration
         procedure Print_Var(Is_Dec : Boolean) is
             Name : String := To_String(Current.Name);
@@ -192,6 +207,7 @@ package body Parser is
                 -- Keywords
                 when Scope => Put_Line("Scope");
                 when Func => Print_Func;
+                when Func_Call => Print_Func_Call;
                 when VarDec => Print_Var(True);
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
