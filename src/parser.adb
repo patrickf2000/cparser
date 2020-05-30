@@ -1,4 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
@@ -23,7 +24,9 @@ package body Parser is
             Node : Ast_Node;
         begin
             case CurrentToken is
-                when Num => Node := Ast_Int;
+                when Num => 
+                    Node := Ast_Int;
+                    Node.Int_Field1 := Integer'Value(To_String(Buf));
                 
                 when others => null;
             end case;
@@ -128,11 +131,15 @@ package body Parser is
         end Print_Func;
         
         -- Prints a variable declaration
-        procedure Print_Var_Dec is
+        procedure Print_Var(Is_Dec : Boolean) is
             Name : String := To_String(Current.Name);
         begin
-            Put_Line("VarDec " & Name);
-        end Print_Var_Dec;
+            if Is_Dec then
+                Put_Line("VarDec " & Name);
+            else
+                Put_Line("VarAssign " & Name);
+            end if;
+        end Print_Var;
         
         -- Prints an element
         procedure Print_Element is
@@ -144,10 +151,10 @@ package body Parser is
             case Current.Node_Type is
                 when Scope => Put_Line("Scope");
                 when Func => Print_Func;
-                when VarDec => Print_Var_Dec;
-                when VarAssign => Put_Line("VarAssign");
+                when VarDec => Print_Var(True);
+                when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
-                when Int => Put_Line("IntL");
+                when Int => Put(Current.Int_Field1, 0); New_Line;
                 when others => Put_Line("??");
             end case;
         end;

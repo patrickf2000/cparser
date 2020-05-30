@@ -14,6 +14,7 @@ package Ast is
     type Ast_Node is record
         Node_Type : Ast_Type := None;
         Name : Unbounded_String;
+        Int_Field1 : Integer := 0;
     end record;
     
     -- Helper functions
