@@ -21,6 +21,15 @@ package body Unwriter is
         Current : Ast_Node;
         Space : Integer := 0;
         
+        -- Writes out the spacing
+        procedure Write_Space is
+        begin
+            for I in 5 .. Space loop
+                Put(File, " ");
+            end loop;
+        end Write_Space;
+        
+        -- Writes a data type
         procedure Write_Data_Type is
         begin
             case Current.D_Type is
@@ -46,6 +55,7 @@ package body Unwriter is
                 Current := Element(Position);
                 
                 case Current.Node_Type is
+                    -- Scopes and function declarations
                     when Scope | Func =>
                         if Current.Node_Type = Func then
                             Write_Func;
@@ -65,6 +75,16 @@ package body Unwriter is
                             Is_Func := False;
                         end if;
                     
+                    -- Variable declarations
+                    when VarDec =>
+                        declare
+                            Name : String := To_String(Current.Name);
+                        begin
+                            Write_Space;
+                            Write_Data_Type;
+                            Put_Line(File, " " & Name & ";");
+                        end;
+                        
                     when VarAssign => null;
                         
                     when Func_Call => null;
