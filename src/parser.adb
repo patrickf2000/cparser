@@ -8,6 +8,7 @@ with GNAT.OS_Lib; use GNAT.OS_Lib;
 with Lex; use Lex;
 with Ast_Tree; use Ast_Tree;
 with Ast_Vector;
+with Ast_IMap;
 with Ast; use Ast;
 
 -- The main parser area
@@ -251,15 +252,37 @@ package body Parser is
             else
                 declare
                     Children : Ast_Vector.Vector;
+                    Func_Map : Ast_IMap.Map;
                     Position2 : Cursor := First_Child(Position);
                     Node : Ast_Node;
                     Math : Ast_Node := Ast_Math;
+                    Func_No : Integer := 1;
                 begin
                     while Has_Element(Position2) loop
                         Node := Element(Position2);
                         Children.Append(Node);
+                        
+                        if Node.Node_Type = Func_Call and Child_Count(Position2) > 0 then
+                            declare
+                                Position3 : Cursor := First_Child(Position2);
+                                Node3 : Ast_Node;
+                                F_Children : Ast_Vector.Vector;
+                            begin
+                                while Has_Element(Position3) loop
+                                    Node3 := Element(Position3);
+                                    F_Children.Append(Node3);
+                                    Position3 := Next_Sibling(Position3);
+                                end loop;
+                                
+                                Func_Map.Include(Func_No, F_Children);
+                                Func_No := Func_No + 1;
+                            end;
+                        end if;
+                        
                         Position2 := Next_Sibling(Position2);
                     end loop;
+                    
+                    Func_No := 1;
                     
                     Delete_Children(Ast, Position);
                     Append_Child(Ast, Position, Math);
@@ -267,6 +290,21 @@ package body Parser is
                     
                     for N of Children loop
                         Append_Child(Ast, Position2, N);
+                        
+                        if N.Node_Type = Func_Call then
+                            declare
+                                Position3 : Cursor := Find_In_Subtree(Position, N);
+                                F_Children : Ast_Vector.Vector := Func_Map.Element(Func_No);
+                            begin
+                                for N2 of F_Children loop
+                                    Append_Child(Ast, Position3, N2);
+                                end loop;
+                                
+                                Handle_Func_Call(Position3);
+                            end;
+                            
+                            Func_No := Func_No + 1;
+                        end if;
                     end loop;
                 end;
             end if;
