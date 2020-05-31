@@ -110,11 +110,15 @@ package body Parser is
         end Build_Var_Assign;
         
         -- Builds variable declarations
-        procedure Build_Var_Dec(Data_Type : Token; Name : Unbounded_String) is
+        procedure Build_Var_Dec(Data_Type : Token; Name : Unbounded_String;
+                               Var_Assign : Boolean := True) is
             Var_Dec : Ast_Node := Ast_Var_Dec(Name);
         begin
             Append_Child(Ast, Position, Var_Dec);
-            Build_Var_Assign(Name);
+            
+            if Var_Assign then
+                Build_Var_Assign(Name);
+            end if;
         end Build_Var_Dec;
         
         procedure Build_Return is
@@ -150,6 +154,8 @@ package body Parser is
                             Build_Func(Data_Type, Name);
                         elsif CurrentToken = Assign then
                             Build_Var_Dec(Data_Type, Name);
+                        elsif CurrentToken = SemiColon then
+                            Build_Var_Dec(Data_Type, Name, False);
                         else
                             -- TODO: SYNTAX ERROR
                             Put_Line("SYNTAX ERROR");
