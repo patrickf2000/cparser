@@ -38,26 +38,9 @@ package body Unwriter is
             end case;
         end Write_Data_Type;
         
-        -- Write a function declaration
-        procedure Write_Func is
-            Name : String := To_String(Current.Name);
+        -- Writes children of a node
+        procedure Write_Children(Position : in out Cursor) is
         begin
-            Write_Data_Type;
-            Put_Line(File, " " & Name & "() {");
-        end Write_Func;
-        
-        -- Write a variable assignment
-        procedure Write_Var_Assign(Position : in out Cursor) is
-            Name : String := To_String(Current.Name);
-        begin
-            Write_Space;
-            Put(File, Name & " =");
-            
-            Current := Element(Position);
-            if Current.Node_Type = Math then
-                Position := First_Child(Position);
-            end if;
-            
             while Has_Element(Position) loop
                 Current := Element(Position);
                 
@@ -80,8 +63,30 @@ package body Unwriter is
                 end case;
                 
                 Position := Next_Sibling(Position);
-            end loop;
+            end loop; 
+        end Write_Children;
+        
+        -- Write a function declaration
+        procedure Write_Func is
+            Name : String := To_String(Current.Name);
+        begin
+            Write_Data_Type;
+            Put_Line(File, " " & Name & "() {");
+        end Write_Func;
+        
+        -- Write a variable assignment
+        procedure Write_Var_Assign(Position : in out Cursor) is
+            Name : String := To_String(Current.Name);
+        begin
+            Write_Space;
+            Put(File, Name & " =");
             
+            Current := Element(Position);
+            if Current.Node_Type = Math then
+                Position := First_Child(Position);
+            end if;
+            
+            Write_Children(Position);            
             Put_Line(File, ";");
         end Write_Var_Assign;
         
