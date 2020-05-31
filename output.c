@@ -1,1 +1,6 @@
+int add() {
+}
+
+int main() {
+}
 
