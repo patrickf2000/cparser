@@ -5,6 +5,7 @@ with Ada.Command_Line;
 with Ast_Tree; use Ast_Tree;
 with Parser; use Parser;
 with Debug; use Debug;
+with Unwriter; use Unwriter;
 
 procedure Main is
     -- Rename clunky package
@@ -29,4 +30,5 @@ begin
     Build_Tree(Ast, To_String(File_Name));
     Run_Pass2(Ast);
     Print_Tree(Ast);
+    Unwrite("output.c", Ast);
 end Main;
