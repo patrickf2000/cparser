@@ -46,6 +46,45 @@ package body Unwriter is
             Put_Line(File, " " & Name & "() {");
         end Write_Func;
         
+        -- Write a variable assignment
+        procedure Write_Var_Assign(Position : in out Cursor) is
+            Name : String := To_String(Current.Name);
+        begin
+            Write_Space;
+            Put(File, Name & " =");
+            
+            Current := Element(Position);
+            if Current.Node_Type = Math then
+                Position := First_Child(Position);
+            end if;
+            
+            while Has_Element(Position) loop
+                Current := Element(Position);
+                
+                case Current.Node_Type is
+                    when Id =>
+                        declare
+                            Name2 : String := To_String(Current.Name);
+                        begin
+                            Put(File, " " & Name2);
+                        end;
+                        
+                    when Int => Put(File, " "); Put(File, Current.Int_Field1, 0);
+                        
+                    when Add => Put(File, " +");
+                    when Sub => Put(File, " -");
+                    when Mul => Put(File, " *");
+                    when Div => Put(File, " /");
+                        
+                    when others => null;
+                end case;
+                
+                Position := Next_Sibling(Position);
+            end loop;
+            
+            Put_Line(File, ";");
+        end Write_Var_Assign;
+        
         -- The main walk function
         procedure Walk(Position : in out Cursor) is
             Position2 : Cursor;
@@ -85,7 +124,9 @@ package body Unwriter is
                             Put_Line(File, " " & Name & ";");
                         end;
                         
-                    when VarAssign => null;
+                    when VarAssign =>
+                        Position2 := First_Child(Position);
+                        Write_Var_Assign(Position2);
                         
                     when Func_Call => null;
                         
