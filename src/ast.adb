@@ -1,6 +1,18 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with Lex; use Lex;
+
 package body Ast is
+    
+    -- Convert a Lex token type to a data type
+    function Token_To_Data(T : Token) return Data_Type is
+    begin
+        case T is
+            when Int => return Int;
+           
+            when others => return None;
+        end case;
+    end Token_To_Data;
     
     -- Creates a scope node
     function Ast_Global return Ast_Node is

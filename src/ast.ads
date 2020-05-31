@@ -3,6 +3,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
 
+with Lex; use Lex;
+
 -- Ast package declaration
 package Ast is
 
@@ -13,6 +15,8 @@ package Ast is
         Add, Sub, Mul, Div,
         Id, Int, Math);
     
+    type Data_Type is (None, Void, Int);
+    
     -- Unique identifier
     UID : Integer := 1;
 
@@ -22,7 +26,11 @@ package Ast is
         UID : Integer := 1;
         Name : Unbounded_String;
         Int_Field1 : Integer := 0;
+        D_Type : Data_Type := None;
     end record;
+    
+    -- Conversion functions
+    function Token_To_Data(T : Token) return Data_Type;
     
     -- Helper functions
     function Ast_Global return Ast_Node;

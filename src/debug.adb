@@ -31,6 +31,15 @@ package body Debug is
         end case;
     end Print_Token;
     
+    -- Converts a data type to a string
+    procedure Print_Data_Type(D_Type : Data_Type) is
+    begin
+        case D_Type is
+            when Int => Put("Int");
+            when others => Put("??");
+        end case;
+    end Print_Data_Type;
+    
     -- Debug our tree
     procedure Print_Tree(Ast : in Ast_Tree.Tree) is
         Current : Ast_Node;
@@ -40,7 +49,9 @@ package body Debug is
         procedure Print_Func is
             Name : String := To_String(Current.Name);
         begin
-            Put_Line("Func " & Name);
+            Put("Func " & Name & " (");
+            Print_Data_Type(Current.D_Type);
+            Put_Line(")");
         end Print_Func;
         
         -- Prints a function call
@@ -55,7 +66,9 @@ package body Debug is
             Name : String := To_String(Current.Name);
         begin
             if Is_Dec then
-                Put_Line("VarDec " & Name);
+                Put("VarDec " & Name & " (");
+                Print_Data_Type(Current.D_Type);
+            Put_Line(")");
             else
                 Put_Line("VarAssign " & Name);
             end if;

@@ -91,6 +91,8 @@ package body Parser is
         procedure Build_Func(Data_Type : Token; Name : Unbounded_String) is
             Func : Ast_Node := Ast_Func(Name);
         begin
+            Func.D_Type := Token_To_Data(Data_Type);
+            
             --TODO: We will need arguments
             while CurrentToken /= LCBrace loop
                 CurrentToken := Get_Token(File, Buf);
@@ -121,6 +123,7 @@ package body Parser is
                                Var_Assign : Boolean := True) is
             Var_Dec : Ast_Node := Ast_Var_Dec(Name);
         begin
+            Var_Dec.D_Type := Token_To_Data(Data_Type);
             Append_Child(Ast, Position, Var_Dec);
             
             if Var_Assign then
