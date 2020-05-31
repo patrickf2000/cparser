@@ -184,6 +184,39 @@ package body Parser is
         Close(File);
     end Build_Tree;
     
+    -- This runs through the tree and consolidates it into more meaningful parts
+    -- For instance, we will perform these steps
+    -- 1) Variable assignments
+    --    -> If there are multiple children, we add a math node as a parent
+    -- 2) Function parameters
+    --    -> All arguments must go under a "Param" node. These are separated by commas
+    procedure Run_Pass2(Ast : in out Ast_Tree.Tree) is
+        Current : Ast_Node;
+        
+        --Iterates through tree
+        procedure Walk(Position : in out Cursor) is
+            Position2 : Cursor;
+        begin
+            if Has_Element(Position) then
+                Current := Element(Position);
+                
+                if Child_Count(Position) > 0 then
+                    Position2 := First_Child(Position);
+                    Walk(Position2);
+                end if;
+                
+                Position := Next_Sibling(Position);
+                Walk(Position);
+            end if;
+        end Walk;
+        
+        -- Start at the root node
+        Position : Cursor := Ast.Root;
+    begin
+        Position := First_Child(Position);
+        Walk(Position);
+    end Run_Pass2;
+    
     -- Debug our tree
     procedure Print_Tree(Ast : in Ast_Tree.Tree) is
         Current : Ast_Node;

@@ -44,5 +44,6 @@ begin
     --Close(File);
     
     Build_Tree(Ast, "first.c");
+    Run_Pass2(Ast);
     Print_Tree(Ast);
 end Main;
