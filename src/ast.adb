@@ -86,5 +86,16 @@ package body Ast is
         Node.Name := Name;
         return Node;
     end Ast_Id;
-
+    
+    -- Represents a comma
+    -- A comma is only used in the first part of the AST
+    function Ast_Comma return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Comma;
+        return Node;
+    end Ast_Comma;
+    
 end Ast;

@@ -4,7 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --Lex package declaration
 package Lex is
     type Token is (None, Eof, NewLn, Id, Num,
-        LParen, RParen, LCBrace, RCBrace, SemiColon, Assign,
+        LParen, RParen, LCBrace, RCBrace, SemiColon, Assign, Comma,
         Plus, Minus, Mul, Div,           
         Int, Ret, Syscall);
         

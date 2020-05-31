@@ -7,7 +7,8 @@ with Ada.Containers; use Ada.Containers;
 package Ast is
 
     -- Represents node types
-    type Ast_Type is (None, Scope, Func, Func_Call, Ret, 
+    type Ast_Type is (None, Scope, Func, Func_Call, Ret,
+        Comma,
         VarDec, VarAssign,
         Add, Sub, Mul, Div,
         Id, Int);
@@ -32,4 +33,5 @@ package Ast is
     function Ast_Ret return Ast_Node;
     function Ast_Int return Ast_Node;
     function Ast_Id(Name : in Unbounded_String) return Ast_Node;
+    function Ast_Comma return Ast_Node;
 end Ast;

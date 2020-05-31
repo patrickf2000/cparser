@@ -50,6 +50,8 @@ package body Parser is
                             Unget_Token(CurrentToken);
                         end if;
                     end;
+                  
+                when Comma => Node := Ast_Comma;
                     
                 when Plus => Node.Node_Type := Add;
                 when Minus => Node.Node_Type := Sub;
@@ -231,6 +233,9 @@ package body Parser is
                 -- Identifiers and literals
                 when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
+                    
+                -- Comma operator
+                when Comma => Put_Line("Sy: ,");
                     
                 -- Operators
                 when Add => Put_Line("Op: +");
