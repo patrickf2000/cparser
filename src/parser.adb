@@ -248,17 +248,21 @@ package body Parser is
         -- Handle variable assignment
         procedure Handle_Var_Assign(Position : in out Cursor) is
             Children_No : Count_Type := Child_Count(Position);
+            Position2 : Cursor := First_Child(Position);
+            Node : Ast_Node;
         begin
             if Children_No = 0 then
                 Syntax_Error("Expected values in variable assignment.");
             elsif Children_No = 1 then
-                null;
+                Node := Element(Position2);
+                
+                if Node.Node_Type = Func_Call and Child_Count(Position2) > 0 then
+                    Handle_Func_Call(Position2);
+                end if;
             else
                 declare
                     Children : Ast_Vector.Vector;
                     Func_Map : Ast_IMap.Map;
-                    Position2 : Cursor := First_Child(Position);
-                    Node : Ast_Node;
                     Math : Ast_Node := Ast_Math;
                     Func_No : Integer := 1;
                 begin
