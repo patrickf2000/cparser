@@ -11,7 +11,7 @@ package Ast is
         Comma,
         VarDec, VarAssign,
         Add, Sub, Mul, Div,
-        Id, Int);
+        Id, Int, Math);
     
     -- Unique identifier
     UID : Integer := 1;
@@ -34,4 +34,5 @@ package Ast is
     function Ast_Int return Ast_Node;
     function Ast_Id(Name : in Unbounded_String) return Ast_Node;
     function Ast_Comma return Ast_Node;
+    function Ast_Math return Ast_Node;
 end Ast;

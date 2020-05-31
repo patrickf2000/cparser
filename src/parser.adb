@@ -3,9 +3,11 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
+with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 with Lex; use Lex;
 with Ast_Tree; use Ast_Tree;
+with Ast_Vector;
 with Ast; use Ast;
 
 -- The main parser area
@@ -190,8 +192,50 @@ package body Parser is
     --    -> If there are multiple children, we add a math node as a parent
     -- 2) Function parameters
     --    -> All arguments must go under a "Param" node. These are separated by commas
+    --
+    -- Some basic syntax errors are caught here
+    --
     procedure Run_Pass2(Ast : in out Ast_Tree.Tree) is
         Current : Ast_Node;
+        
+        -- Syntax error
+        procedure Syntax_Error(Msg : String) is
+        begin
+            Put_Line("[Syntax Error] " & Msg);
+            OS_Exit(1);
+        end Syntax_Error;
+        
+        -- Handle variable assignment
+        procedure Handle_Var_Assign(Position : in out Cursor) is
+            Children_No : Count_Type := Child_Count(Position);
+        begin
+            if Children_No = 0 then
+                Syntax_Error("Expected values in variable assignment.");
+            elsif Children_No = 1 then
+                null;
+            else
+                declare
+                    Children : Ast_Vector.Vector;
+                    Position2 : Cursor := First_Child(Position);
+                    Node : Ast_Node;
+                    Math : Ast_Node := Ast_Math;
+                begin
+                    while Has_Element(Position2) loop
+                        Node := Element(Position2);
+                        Children.Append(Node);
+                        Position2 := Next_Sibling(Position2);
+                    end loop;
+                    
+                    Delete_Children(Ast, Position);
+                    Append_Child(Ast, Position, Math);
+                    Position2 := Find_In_Subtree(Position, Math);
+                    
+                    for N of Children loop
+                        Append_Child(Ast, Position2, N);
+                    end loop;
+                end;
+            end if;
+        end Handle_Var_Assign;
         
         --Iterates through tree
         procedure Walk(Position : in out Cursor) is
@@ -200,10 +244,19 @@ package body Parser is
             if Has_Element(Position) then
                 Current := Element(Position);
                 
-                if Child_Count(Position) > 0 then
-                    Position2 := First_Child(Position);
-                    Walk(Position2);
-                end if;
+                case Current.Node_Type is
+                    when Scope | Func =>
+                        if Child_Count(Position) > 0 then
+                            Position2 := First_Child(Position);
+                            Walk(Position2);
+                        end if;
+                    
+                    when VarAssign => Handle_Var_Assign(Position);
+                        
+                    when Func_Call => null;
+                        
+                    when others => null;
+                end case;
                 
                 Position := Next_Sibling(Position);
                 Walk(Position);
@@ -266,6 +319,7 @@ package body Parser is
                 -- Identifiers and literals
                 when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
+                when Math => Put_Line("Math");
                     
                 -- Comma operator
                 when Comma => Put_Line("Sy: ,");
