@@ -1,18 +1,13 @@
-int main() {
-    int t;
-	int x = 20;
-	int y = 30 + x * 2;
-
-	x = 30;
-	swap(20);
-	swap(2 * y, x);
-	
-	x = 2 * swap(99) + 9 + swap(x*2);
-	
-	return 7;
+int add(int x, int y) {
+    int answer = x + y;
+    return answer;
 }
 
-int swap() {
-    int z = 20;
-    return z;
+int main() {
+    int no = 20;
+    no = add(no, 23);
+    
+    print_int(no);
+    
+    return 0;
 }
