@@ -6,7 +6,7 @@ int main() {
 	swap(20);
 	swap(2 * y, x);
 	
-	x = 2 * swap(99) + 9;
+	x = 2 * swap(99) + 9 + swap(x*2);
 	
 	return 7;
 }

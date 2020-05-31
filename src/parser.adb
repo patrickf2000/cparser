@@ -262,6 +262,7 @@ package body Parser is
                         Node := Element(Position2);
                         Children.Append(Node);
                         
+                        -- If we have a function call, we need to get all the parameters
                         if Node.Node_Type = Func_Call and Child_Count(Position2) > 0 then
                             declare
                                 Position3 : Cursor := First_Child(Position2);
@@ -291,6 +292,8 @@ package body Parser is
                     for N of Children loop
                         Append_Child(Ast, Position2, N);
                         
+                        -- If we have a function call, we need to pass the parameters
+                        -- back into the tree
                         if N.Node_Type = Func_Call then
                             declare
                                 Position3 : Cursor := Find_In_Subtree(Position, N);
