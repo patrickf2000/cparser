@@ -2,7 +2,7 @@ int main() {
     int t;
 	int x = 20;
 	int y = 30 + x * 2;
-	
+
 	x = 30;
 	swap(20);
 	swap(2 * y, x);

@@ -13,6 +13,13 @@ with Ast; use Ast;
 
 -- The main parser area
 package body Parser is
+    
+    -- Syntax error
+    procedure Syntax_Error(Msg : String) is
+    begin
+        Put_Line("[Syntax Error] " & Msg);
+        OS_Exit(1);
+    end Syntax_Error;
 
     -- Build thre tree
     procedure Build_Tree(Ast : in out Ast_Tree.Tree; Path : String) is
@@ -157,8 +164,7 @@ package body Parser is
                         elsif CurrentToken = SemiColon then
                             Build_Var_Dec(Data_Type, Name, False);
                         else
-                            -- TODO: SYNTAX ERROR
-                            Put_Line("SYNTAX ERROR");
+                            Syntax_Error("Expected variable or function declaration.");
                         end if;
                     end;
                     
@@ -174,8 +180,7 @@ package body Parser is
                         elsif CurrentToken = Assign then
                             Build_Var_Assign(Name);
                         else
-                            -- TODO: SYNTAX ERROR
-                            Put_Line("SYNTAX ERROR");
+                            Syntax_Error("Expected variable declaration or function call.");
                         end if;
                     end;
                     
@@ -204,13 +209,6 @@ package body Parser is
     --
     procedure Run_Pass2(Ast : in out Ast_Tree.Tree) is
         Current : Ast_Node;
-        
-        -- Syntax error
-        procedure Syntax_Error(Msg : String) is
-        begin
-            Put_Line("[Syntax Error] " & Msg);
-            OS_Exit(1);
-        end Syntax_Error;
         
         -- Handle function call
         -- Algorithm:
