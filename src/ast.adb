@@ -98,6 +98,16 @@ package body Ast is
         return Node;
     end Ast_Comma;
     
+    -- Returns a parameter node
+    function Ast_Param return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Param;
+        return Node;
+    end Ast_Param;
+    
     -- Returns math node
     function Ast_Math return Ast_Node is
         Node : Ast_Node;

@@ -3,9 +3,10 @@ int main() {
 	int y = 30 + x * 2;
 	
 	x = 30;
-	swap(2, x);
+	swap(20);
+	swap(2 * y, x);
 	
-	x = 2 * swap() + 9;
+	x = 2 * swap(99) + 9;
 	
 	return 7;
 }

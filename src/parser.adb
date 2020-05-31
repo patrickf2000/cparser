@@ -205,6 +205,41 @@ package body Parser is
             OS_Exit(1);
         end Syntax_Error;
         
+        -- Handle function call
+        -- Algorithm:
+        -- 1) Gather all children
+        -- 2) Clear the subtree
+        -- 3) Iterate through the children and create parameters
+        --    -> When we hit a comma, add the param as a child, and clear things out
+        --
+        procedure Handle_Func_Call(Position : in out Cursor) is
+            Current_Param : Ast_Node := Ast_Param;
+            Position2 : Cursor := First_Child(Position);
+            Children : Ast_Vector.Vector;
+            Node : Ast_Node;
+        begin
+            while Has_Element(Position2) loop
+                Node := Element(Position2);
+                Children.Append(Node);
+                Position2 := Next_Sibling(Position2);
+            end loop;
+            
+            Delete_Children(Ast, Position);
+            Append_Child(Ast, Position, Current_Param);
+            Position2 := Find_In_Subtree(Position, Current_Param);
+            
+            for N of Children loop
+                if N.Node_Type = Comma then
+                    Current_Param := Ast_Param;
+                    Append_Child(Ast, Position, Current_Param);
+                    Position2 := Find_In_Subtree(Position, Current_Param);
+                else
+                    Append_Child(Ast, Position2, N);
+                end if;
+            end loop;
+            
+        end Handle_Func_Call;
+        
         -- Handle variable assignment
         procedure Handle_Var_Assign(Position : in out Cursor) is
             Children_No : Count_Type := Child_Count(Position);
@@ -253,7 +288,7 @@ package body Parser is
                     
                     when VarAssign => Handle_Var_Assign(Position);
                         
-                    when Func_Call => null;
+                    when Func_Call => Handle_Func_Call(Position);
                         
                     when others => null;
                 end case;
@@ -312,6 +347,7 @@ package body Parser is
                 when Scope => Put_Line("Scope");
                 when Func => Print_Func;
                 when Func_Call => Print_Func_Call;
+                when Param => Put_Line("Param");
                 when VarDec => Print_Var(True);
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
