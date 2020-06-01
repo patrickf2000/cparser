@@ -31,6 +31,8 @@ package body Parser is
         
         -- Forward declarations
         procedure Build_Func_Call(Name : Unbounded_String);
+        procedure Build_Var_Dec(Data_Type : Token; Name : Unbounded_String;
+                               Var_Assign : Boolean := True);
         
         -- Builds AST node until the end of an expression
         procedure Build_Children(Parent_Node : Ast_Node; 
@@ -102,16 +104,39 @@ package body Parser is
         -- Builds function declarations
         procedure Build_Func(Data_Type : Token; Name : Unbounded_String) is
             Func : Ast_Node := Ast_Func(Name);
+            Args : Ast_Node := Ast_Args;
+            
+            Type_Token, Name_Token : Token;
         begin
             Func.D_Type := Token_To_Data(Data_Type);
             
-            --TODO: We will need arguments
+            Append_Child(Ast, Position, Func);
+            Position := Find_In_Subtree(Position, Func);
+            
+            Append_Child(Ast, Position, Args);
+            Position := Find_In_Subtree(Position, Args);
+            
+            CurrentToken := Get_Token(File, Buf);
+            
+            -- Function arguments
+            while CurrentToken /= RParen loop
+                if CurrentToken = Comma then
+                    null;
+                else
+                    Type_Token := CurrentToken;
+                    Name_Token := Get_Token(File, Buf);
+                
+                    Build_Var_Dec(Type_Token, Buf, False);
+                end if;
+                
+                CurrentToken := Get_Token(File, Buf);
+            end loop;
+            
             while CurrentToken /= LCBrace loop
                 CurrentToken := Get_Token(File, Buf);
             end loop;
             
-            Append_Child(Ast, Position, Func);
-            Position := Find(Ast, Func);
+            Position := Parent(Position);
         end Build_Func;
         
         -- Build function calls

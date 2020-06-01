@@ -10,7 +10,7 @@ package Ast is
 
     -- Represents node types
     type Ast_Type is (None, Scope, Func, Func_Call, Ret,
-        Comma, Param,
+        Comma, Param, Args,
         VarDec, VarAssign,
         Add, Sub, Mul, Div,
         Id, CharL, Int, FloatL, Math, Str);
@@ -47,5 +47,6 @@ package Ast is
     function Ast_Id(Name : in Unbounded_String) return Ast_Node;
     function Ast_Comma return Ast_Node;
     function Ast_Param return Ast_Node;
+    function Ast_Args return Ast_Node;
     function Ast_Math return Ast_Node;
 end Ast;

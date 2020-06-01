@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+int add(int x, int y) {
+    int answer = x + y;
+    return answer;
+}
+
 void main() {
     char v1 = 'a';
     short v2;
