@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 --Lex package declaration
 package Lex is
-    type Token is (None, Eof, NewLn, Id, Num,
+    type Token is (None, Eof, NewLn, Id, Num, StringL,
         LParen, RParen, LCBrace, RCBrace, SemiColon, Assign, Comma,
         Plus, Minus, Mul, Div,           
         Int, Ret, Syscall);
@@ -12,6 +12,7 @@ package Lex is
     NextToken : Token := None;
     UndoToken : Token := None;
     Cls : Boolean := False;
+    In_Quote : Boolean := False;
         
     procedure Unget_Token(T : Token);
     function Get_Token(File : File_Type; Buf : out Unbounded_String) return Token;

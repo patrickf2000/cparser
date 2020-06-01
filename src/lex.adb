@@ -92,27 +92,40 @@ package body Lex is
         while not End_Of_File(File) loop
             Get(File, C);
             
-            case C is
-                when ' ' | Character'Val(9) =>
-                    if Length(Buf) > 0 then
-                        TT := To_Token(To_String(Buf));
-                        Cls := True;
-                        return TT;
-                    end if;
-                    
-                when '(' | ')' | '{' | '}' | '=' | ';' | ',' |
-                    '+' | '-' | '*' | '/' =>
-                    TT := To_Token(C);
-                    if Length(Buf) > 0 then
-                        NextToken := TT;
-                        TT := To_Token(To_String(Buf));
-                        Cls := True;
-                        return TT;
-                    end if;
+            if In_Quote then
+                if C = '"' then
+                    In_Quote := False;
+                    TT := StringL;
+                    Cls := True;
                     return TT;
+                else
+                    Append(Buf, C);
+                end if;
+            else
+                case C is
+                    when '"' => In_Quote := True;
+                        
+                    when ' ' | Character'Val(9) =>
+                        if Length(Buf) > 0 then
+                            TT := To_Token(To_String(Buf));
+                            Cls := True;
+                            return TT;
+                        end if;
                     
-                when others => Append(Buf, C);
-            end case;
+                    when '(' | ')' | '{' | '}' | '=' | ';' | ',' |
+                        '+' | '-' | '*' | '/' =>
+                        TT := To_Token(C);
+                        if Length(Buf) > 0 then
+                            NextToken := TT;
+                            TT := To_Token(To_String(Buf));
+                            Cls := True;
+                            return TT;
+                        end if;
+                        return TT;
+                    
+                    when others => Append(Buf, C);
+                end case;
+            end if;
         end loop;
         
         return TT;

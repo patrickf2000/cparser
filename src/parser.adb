@@ -43,32 +43,36 @@ package body Parser is
             procedure Build_Node is
             begin
                 case CurrentToken is
-                when Num => 
-                    Node := Ast_Int;
-                    Node.Int_Field1 := Integer'Value(To_String(Buf));
+                    when Num => 
+                        Node := Ast_Int;
+                        Node.Int_Field1 := Integer'Value(To_String(Buf));
                     
-                when Id =>
-                    declare
-                        Name : Unbounded_String := Buf;
-                    begin
-                        CurrentToken := Get_Token(File, Buf);
+                    when StringL =>
+                        Node := Ast_String;
+                        Node.Name := Buf;
+                    
+                    when Id =>
+                        declare
+                            Name : Unbounded_String := Buf;
+                        begin
+                            CurrentToken := Get_Token(File, Buf);
                         
-                        if CurrentToken = LParen then
-                            Build_Func_Call(Name);
-                        else
-                            Node := Ast_Id(Name);
-                            Unget_Token(CurrentToken);
-                        end if;
-                    end;
+                            if CurrentToken = LParen then
+                                Build_Func_Call(Name);
+                            else
+                                Node := Ast_Id(Name);
+                                Unget_Token(CurrentToken);
+                            end if;
+                        end;
                   
-                when Comma => Node := Ast_Comma;
+                    when Comma => Node := Ast_Comma;
                     
-                when Plus => Node.Node_Type := Add;
-                when Minus => Node.Node_Type := Sub;
-                when Mul => Node.Node_Type := Mul;
-                when Div => Node.Node_Type := Div;
+                    when Plus => Node.Node_Type := Add;
+                    when Minus => Node.Node_Type := Sub;
+                    when Mul => Node.Node_Type := Mul;
+                    when Div => Node.Node_Type := Div;
                 
-                when others => null;
+                    when others => null;
                 end case;
             end Build_Node;
             

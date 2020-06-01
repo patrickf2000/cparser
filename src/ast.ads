@@ -13,7 +13,7 @@ package Ast is
         Comma, Param,
         VarDec, VarAssign,
         Add, Sub, Mul, Div,
-        Id, Int, Math);
+        Id, Int, Math, Str);
     
     type Data_Type is (None, Void, Int);
     
@@ -40,6 +40,7 @@ package Ast is
     function Ast_Var_Dec(Name : in Unbounded_String) return Ast_Node;
     function Ast_Ret return Ast_Node;
     function Ast_Int return Ast_Node;
+    function Ast_String return Ast_Node;
     function Ast_Id(Name : in Unbounded_String) return Ast_Node;
     function Ast_Comma return Ast_Node;
     function Ast_Param return Ast_Node;
