@@ -180,14 +180,18 @@ package body Parser is
                     declare
                         Name : Unbounded_String := Buf;
                     begin
-                        CurrentToken := Get_Token(File, Buf);
-                        
-                        if CurrentToken = LParen then
-                            Build_Func_Call(Name);
-                        elsif CurrentToken = Assign then
-                            Build_Var_Assign(Name);
+                        if To_String(Name) = "#include" then
+                            CurrentToken := Get_Token(File, Buf);
                         else
-                            Syntax_Error("Expected variable declaration or function call.");
+                            CurrentToken := Get_Token(File, Buf);
+                        
+                            if CurrentToken = LParen then
+                                Build_Func_Call(Name);
+                            elsif CurrentToken = Assign then
+                                Build_Var_Assign(Name);
+                            else
+                                Syntax_Error("Expected variable declaration or function call.");
+                            end if;
                         end if;
                     end;
                     

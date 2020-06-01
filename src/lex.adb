@@ -90,7 +90,8 @@ package body Lex is
         end if;
     
         while not End_Of_File(File) loop
-            Get(File, C);
+            --Get(File, C);
+            Get_Immediate(File, C);
             
             if In_Quote then
                 if C = '"' then
@@ -105,7 +106,8 @@ package body Lex is
                 case C is
                     when '"' => In_Quote := True;
                         
-                    when ' ' | Character'Val(9) =>
+                    when ' ' | Character'Val(9) |
+                        Character'Val(10) =>
                         if Length(Buf) > 0 then
                             TT := To_Token(To_String(Buf));
                             Cls := True;

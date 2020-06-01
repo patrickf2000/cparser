@@ -215,6 +215,9 @@ package body Unwriter is
     begin
         Create(File, Ada.Text_IO.Out_File, Out_File);
         
+        Put_Line(File, "#include <stdio.h>");
+        New_Line(File);
+        
         Position := First_Child(Position);
         Walk(Position);
         
