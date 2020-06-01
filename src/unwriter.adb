@@ -55,12 +55,19 @@ package body Unwriter is
                             Put(File, Name2);
                         end;
                         
-                    when Int => Put(File, " "); Put(File, Current.Int_Field1, 0);
+                    when Int => Put(File, Current.Int_Field1, 0);
                         
                     when Add => Put(File, " + ");
                     when Sub => Put(File, " - ");
                     when Mul => Put(File, " * ");
                     when Div => Put(File, " / ");
+                        
+                    when Func_Call =>
+                        declare
+                            Position2 : Cursor := First_Child(Position);
+                        begin
+                            Write_Func_Call(Position2);
+                        end;
                         
                     when others => null;
                 end case;
