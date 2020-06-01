@@ -21,6 +21,9 @@ package body Unwriter is
         Current : Ast_Node;
         Space : Integer := 0;
         
+        -- Forward declaration
+        procedure Write_Func_Call(Position : in out Cursor);
+        
         -- Writes out the spacing
         procedure Write_Space is
         begin
@@ -49,15 +52,15 @@ package body Unwriter is
                         declare
                             Name2 : String := To_String(Current.Name);
                         begin
-                            Put(File, " " & Name2);
+                            Put(File, Name2);
                         end;
                         
                     when Int => Put(File, " "); Put(File, Current.Int_Field1, 0);
                         
-                    when Add => Put(File, " +");
-                    when Sub => Put(File, " -");
-                    when Mul => Put(File, " *");
-                    when Div => Put(File, " /");
+                    when Add => Put(File, " + ");
+                    when Sub => Put(File, " - ");
+                    when Mul => Put(File, " * ");
+                    when Div => Put(File, " / ");
                         
                     when others => null;
                 end case;
@@ -74,12 +77,42 @@ package body Unwriter is
             Put_Line(File, " " & Name & "() {");
         end Write_Func;
         
+        -- Write a function call
+        procedure Write_Func_Call(Position : in out Cursor) is
+            Name : String := To_String(Current.Name);
+            Position2 : Cursor := Position;
+            First_Param : Boolean := True;
+        begin
+            Put(File, Name & "(");
+            Current := Element(Position2);
+            
+            while Has_Element(Position2) loop
+                if First_Param then
+                    First_Param := False;
+                else
+                    Put(File, ", ");
+                end if;
+                
+                declare
+                    Position3 : Cursor := First_Child(Position2);
+                begin
+                    Write_Children(Position3);
+                end;
+                
+                Position2 := Next_Sibling(Position2);
+            end loop;
+            
+            Put(File, ")");
+        exception
+            when others => Put(File, ")");
+        end Write_Func_Call;
+        
         -- Write a variable assignment
         procedure Write_Var_Assign(Position : in out Cursor) is
             Name : String := To_String(Current.Name);
         begin
             Write_Space;
-            Put(File, Name & " =");
+            Put(File, Name & " = ");
             
             Current := Element(Position);
             if Current.Node_Type = Math then
@@ -128,12 +161,17 @@ package body Unwriter is
                             Write_Data_Type;
                             Put_Line(File, " " & Name & ";");
                         end;
-                        
+                       
+                    -- Variable assignments    
                     when VarAssign =>
                         Position2 := First_Child(Position);
                         Write_Var_Assign(Position2);
                         
-                    when Func_Call => null;
+                    when Func_Call =>
+                        Write_Space;
+                        Position2 := First_Child(Position);
+                        Write_Func_Call(Position2);
+                        Put_Line(File, ";");
                         
                     when others => null;
                 end case;

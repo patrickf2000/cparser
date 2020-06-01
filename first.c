@@ -8,6 +8,7 @@ int main() {
     no = add(no, 23);
     
     print_int(no);
+    add(no, no * 27);
     
     return 0;
 }
