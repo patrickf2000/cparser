@@ -6,7 +6,7 @@ function run_test() {
 	entry2=`basename $entry`
 	echo "$entry2"
 	
-	./obj/main $entry
+	./obj/main --silent $entry
 	
 	gcc $entry -o /tmp/ctest/$entry2
 	gcc output.c -o /tmp/ctest/output

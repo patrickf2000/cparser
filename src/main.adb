@@ -14,14 +14,22 @@ procedure Main is
     -- Local variables
     Ast : Tree;
     File_Name : Unbounded_String := To_Unbounded_String("first.c");
+    Silent : Boolean := False;
     
     -- Parse command line arguments
     procedure Parse_Args is
         Index : Integer := 0;
     begin
-        if ACL.Argument_Count > 0 then
-            File_Name := To_Unbounded_String(ACL.Argument(1));
-        end if;
+        loop
+            Index := Index + 1;
+            exit when Index > ACL.Argument_Count;
+            
+            if ACL.Argument(Index) = "--silent" then
+                Silent := True;
+            else
+                File_Name := To_Unbounded_String(ACL.Argument(Index));
+            end if;
+        end loop;
     end Parse_Args;
     
 begin
@@ -29,6 +37,10 @@ begin
     
     Build_Tree(Ast, To_String(File_Name));
     Run_Pass2(Ast);
-    Print_Tree(Ast);
+    
+    if not Silent then
+        Print_Tree(Ast);
+    end if;
+    
     Unwrite("output.c", Ast);
 end Main;
