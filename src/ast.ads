@@ -15,7 +15,7 @@ package Ast is
         Add, Sub, Mul, Div,
         Id, Int, Math, Str);
     
-    type Data_Type is (None, Void, Int);
+    type Data_Type is (None, Void, Char, Short, Int, Long, FloatT, Double);
     
     -- Unique identifier
     UID : Integer := 1;

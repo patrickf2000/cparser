@@ -35,7 +35,14 @@ package body Debug is
     procedure Print_Data_Type(D_Type : Data_Type) is
     begin
         case D_Type is
+            when Void => Put("Void");
+            when Char => Put("Char");
+            when Short => Put("Short");
             when Int => Put("Int");
+            when Long => Put("Long");
+            when FloatT => Put("Float");
+            when Double => Put("Double");
+                
             when others => Put("??");
         end case;
     end Print_Data_Type;

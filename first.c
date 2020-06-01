@@ -1,10 +1,9 @@
 #include <stdio.h>
 
-int main() {
-    int x = 20;
-    puts("Hello!");
-    
-    printf("%d\n", x);
-    
-    return 0;
+void main() {
+    char v1;
+    short v2;
+    int v3;
+    float v4;
+    double v5;
 }

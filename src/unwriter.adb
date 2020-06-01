@@ -36,7 +36,14 @@ package body Unwriter is
         procedure Write_Data_Type is
         begin
             case Current.D_Type is
+                when Void => Put(File, "void");
+                when Char => Put(File, "char");
+                when Short => Put(File, "short");
                 when Int => Put(File, "int");
+                when Long => Put(File, "long");
+                when FloatT => Put(File, "float");
+                when Double => Put(File, "double");
+                
                 when others => Put(File, "");
             end case;
         end Write_Data_Type;

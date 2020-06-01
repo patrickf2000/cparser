@@ -8,7 +8,13 @@ package body Ast is
     function Token_To_Data(T : Token) return Data_Type is
     begin
         case T is
+            when Void => return Void;
+            when Char => return Char;
+            when Short => return Short;
             when Int => return Int;
+            when Long => return Long;
+            when FloatT => return FloatT;
+            when Double => return Double;
            
             when others => return None;
         end case;

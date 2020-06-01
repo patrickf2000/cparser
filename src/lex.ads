@@ -4,9 +4,10 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --Lex package declaration
 package Lex is
     type Token is (None, Eof, NewLn, Id, Num, StringL,
-        LParen, RParen, LCBrace, RCBrace, SemiColon, Assign, Comma,
-        Plus, Minus, Mul, Div,           
-        Int, Ret, Syscall);
+                   LParen, RParen, LCBrace, RCBrace, SemiColon, Assign, Comma,
+                   Plus, Minus, Mul, Div,           
+                   Void, Char, Short, Int, Long, FloatT, Double, 
+                   Ret, Syscall);
         
     -- Global control variables needed by the lexer
     NextToken : Token := None;

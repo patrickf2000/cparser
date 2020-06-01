@@ -34,8 +34,23 @@ package body Lex is
             
         -- The lexical function
         begin
-            if Input = "int" then
+            -- Data types
+            if Input = "void" then
+                return Void;
+            elsif Input = "char" then
+                return Char;
+            elsif Input = "short" then
+                return Short;
+            elsif Input = "int" then
                 return Int;
+            elsif Input = "long" then
+                return Long;
+            elsif Input = "float" then
+                return FloatT;
+            elsif Input = "double" then
+                return Double;
+                
+            -- Other keywords
             elsif Input = "return" then
                 return Ret;
             elsif Input = "syscall" then

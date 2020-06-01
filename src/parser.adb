@@ -156,7 +156,7 @@ package body Parser is
             
             case CurrentToken is
                 -- Could be variable declaration or function declaration
-                when Int =>
+                when Void | Char | Short | Int | Long | FloatT | Double =>
                     declare
                         Data_Type : Token := CurrentToken;
                         NameToken : Token := Get_Token(File, Buf);
