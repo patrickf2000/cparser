@@ -104,6 +104,16 @@ package body Ast is
         return Node;
     end Ast_String;
     
+    -- Represents a character
+    function Ast_Char return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := CharL;
+        return Node;
+    end Ast_Char;
+    
     -- Represents an ID
     function Ast_Id(Name : in Unbounded_String) return Ast_Node is
         Node : Ast_Node;

@@ -102,6 +102,7 @@ package body Debug is
                 when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
                 when Str => Put_Line("Str: " & To_String(Current.Name));
+                when CharL => Put_Line("ChL: " & To_String(Current.Name));
                 when Math => Put_Line("Math");
                     
                 -- Comma operator

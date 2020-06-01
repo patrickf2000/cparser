@@ -50,6 +50,10 @@ package body Parser is
                     when StringL =>
                         Node := Ast_String;
                         Node.Name := Buf;
+                        
+                    when CharL =>
+                        Node := Ast_Char;
+                        Node.Name := Buf;
                     
                     when Id =>
                         declare

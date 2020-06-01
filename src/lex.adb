@@ -109,17 +109,22 @@ package body Lex is
             Get_Immediate(File, C);
             
             if In_Quote then
-                if C = '"' then
+                if C = '"' or C = ''' then
                     In_Quote := False;
                     TT := StringL;
                     Cls := True;
+                    
+                    if C = ''' then
+                        TT := CharL;
+                    end if;
+                    
                     return TT;
                 else
                     Append(Buf, C);
                 end if;
             else
                 case C is
-                    when '"' => In_Quote := True;
+                    when '"' | ''' => In_Quote := True;
                         
                     when ' ' | Character'Val(9) |
                         Character'Val(10) =>

@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 --Lex package declaration
 package Lex is
-    type Token is (None, Eof, NewLn, Id, Num, StringL,
+    type Token is (None, Eof, NewLn, Id, Num, StringL, CharL,
                    LParen, RParen, LCBrace, RCBrace, SemiColon, Assign, Comma,
                    Plus, Minus, Mul, Div,           
                    Void, Char, Short, Int, Long, FloatT, Double, 
