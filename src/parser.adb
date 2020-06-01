@@ -46,6 +46,10 @@ package body Parser is
                     when Num => 
                         Node := Ast_Int;
                         Node.Int_Field1 := Integer'Value(To_String(Buf));
+                        
+                    when FloatL =>
+                        Node := Ast_Float;
+                        Node.Float_Field1 := Float'Value(To_String(Buf));
                     
                     when StringL =>
                         Node := Ast_String;

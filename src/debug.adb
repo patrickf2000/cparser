@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Float_Text_IO; use Ada.Float_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers; use Ada.Containers;
 
@@ -100,6 +101,7 @@ package body Debug is
                     
                 -- Identifiers and literals
                 when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
+                when FloatL => Put("Flt: "); Put(Current.Float_Field1, 0); New_Line;
                 when Id => Put_Line("ID: " & To_String(Current.Name));
                 when Str => Put_Line("Str: " & To_String(Current.Name));
                 when CharL => Put_Line("ChL: " & To_String(Current.Name));

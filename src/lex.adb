@@ -21,6 +21,16 @@ package body Lex is
         
         -- Converts a string to a token
         function To_Token(Input : String) return Token is
+            
+            -- Check to see if we have a float
+            function Is_Float(Item : in String) return Boolean is
+                Dummy : Float;
+            begin
+                Dummy := Float'Value(Item);
+                return True;
+            exception
+                when others => return False;
+            end Is_Float;
         
             -- Check to see if we have an integer
             function Is_Int(Item: in String) return Boolean is
@@ -55,6 +65,8 @@ package body Lex is
                 return Ret;
             elsif Input = "syscall" then
                 return Syscall;
+            elsif Is_Float(Input) then
+                return FloatL;
             elsif Is_Int(Input) then
                 return Num;
             else

@@ -94,6 +94,16 @@ package body Ast is
         return Node;
     end Ast_Int;
     
+    -- Represents a float
+    function Ast_Float return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := FloatL;
+        return Node;
+    end Ast_Float;
+    
     -- Represents a string
     function Ast_String return Ast_Node is
         Node : Ast_Node;

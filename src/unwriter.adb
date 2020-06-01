@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Float_Text_IO; use Ada.Float_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
@@ -63,6 +64,7 @@ package body Unwriter is
                         end;
                         
                     when Int => Put(File, Current.Int_Field1, 0);
+                    when FloatL => Put(File, Current.Float_Field1, 0);
                         
                     when Str => Put(File, '"' & To_String(Current.Name) & '"');
                     when CharL => Put(File, ''' & To_String(Current.Name) & ''');
