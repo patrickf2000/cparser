@@ -89,11 +89,32 @@ package body Unwriter is
         end Write_Children;
         
         -- Write a function declaration
-        procedure Write_Func is
+        procedure Write_Func(Position : in out Cursor) is
             Name : String := To_String(Current.Name);
+            Position2 : Cursor := First_Child(Position);
+            First_Param : Boolean := True;
         begin
             Write_Data_Type;
-            Put_Line(File, " " & Name & "() {");
+            Put(File, " " & Name & "(");
+            
+            if Child_Count(Position2) > 0 then
+                Position2 := First_Child(Position2);
+                
+                while Has_Element(Position2) loop
+                    if First_Param then
+                        First_Param := False;
+                    else
+                        Put(File, ", ");
+                    end if;
+                    
+                    Current := Element(Position2);
+                    Write_Data_Type;
+                    Put(File, " " & To_String(Current.Name));
+                    Position2 := Next_Sibling(Position2);
+                end loop;
+            end if;
+            
+            Put_Line(File, ") {");
         end Write_Func;
         
         -- Write a function call
@@ -168,7 +189,7 @@ package body Unwriter is
                     -- Scopes and function declarations
                     when Scope | Func =>
                         if Current.Node_Type = Func then
-                            Write_Func;
+                            Write_Func(Position);
                             Is_Func := True;
                         end if;
                         

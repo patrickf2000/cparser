@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int add() {
+int add(int x, int y) {
     int answer;
     answer = x + y;
     return answer;
