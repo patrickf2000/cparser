@@ -132,6 +132,20 @@ package body Unwriter is
             Put_Line(File, ";");
         end Write_Var_Assign;
         
+        -- Write return statement
+        procedure Write_Ret(Position : in out Cursor) is
+        begin
+            Write_Space;
+            Put(File, "return");
+            
+            if Has_Element(Position) then
+                Put(File, " ");
+                Write_Children(Position);
+            end if;
+            
+            Put_Line(File, ";");
+        end Write_Ret;
+        
         -- The main walk function
         procedure Walk(Position : in out Cursor) is
             Position2 : Cursor;
@@ -175,12 +189,18 @@ package body Unwriter is
                     when VarAssign =>
                         Position2 := First_Child(Position);
                         Write_Var_Assign(Position2);
-                        
+                       
+                    -- Function calls
                     when Func_Call =>
                         Write_Space;
                         Position2 := First_Child(Position);
                         Write_Func_Call(Position2);
                         Put_Line(File, ";");
+                        
+                    -- Return statements
+                    when Ret =>
+                        Position2 := First_Child(Position);
+                        Write_Ret(Position2);
                         
                     when others => null;
                 end case;
