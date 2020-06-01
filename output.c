@@ -11,7 +11,7 @@ void main() {
     v1 = 'a';
     short v2;
     int v3;
-    v3 = add(2.00000E+00, 2.00000E+01);
+    v3 = add(2, 20);
     float v4;
     v4 = 1.23000E+00;
     double v5;

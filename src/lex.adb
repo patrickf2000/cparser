@@ -65,10 +65,10 @@ package body Lex is
                 return Ret;
             elsif Input = "syscall" then
                 return Syscall;
-            elsif Is_Float(Input) then
-                return FloatL;
             elsif Is_Int(Input) then
                 return Num;
+            elsif Is_Float(Input) then
+                return FloatL;
             else
                 return Id;
             end if;
