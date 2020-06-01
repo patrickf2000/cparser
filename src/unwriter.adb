@@ -57,6 +57,8 @@ package body Unwriter is
                         
                     when Int => Put(File, Current.Int_Field1, 0);
                         
+                    when Str => Put(File, '"' & To_String(Current.Name) & '"');
+                        
                     when Add => Put(File, " + ");
                     when Sub => Put(File, " - ");
                     when Mul => Put(File, " * ");
