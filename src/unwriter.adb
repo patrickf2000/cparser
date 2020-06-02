@@ -39,11 +39,20 @@ package body Unwriter is
         begin
             case Current.D_Type is
                 when Void => Put(File, "void");
+                    
                 when Char => Put(File, "char");
                 when UChar => Put(File, "unsigned char");
+                    
                 when Short => Put(File, "short");
+                when UShort => Put(File, "unsigned short");
+                    
                 when Int => Put(File, "int");
+                when UInt => Put(File, "unsigned int");
+                    
                 when Long => Put(File, "long");
+                when ULong => Put(File, "unsigned long");
+                when LL => Put(File, "long long");
+                    
                 when FloatT => Put(File, "float");
                 when Double => Put(File, "double");
                 

@@ -38,11 +38,20 @@ package body Debug is
     begin
         case D_Type is
             when Void => Put("Void");
+                
             when Char => Put("Char");
             when UChar => Put("UChar");
+                
             when Short => Put("Short");
+            when UShort => Put("UShort");
+                
             when Int => Put("Int");
+            when UInt => Put("UInt");
+                
             when Long => Put("Long");
+            when ULong => Put("ULong");
+            when LL => Put("LongLong");
+                
             when FloatT => Put("Float");
             when Double => Put("Double");
                 

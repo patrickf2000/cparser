@@ -214,7 +214,7 @@ package body Parser is
                                 elsif CurrentToken = SemiColon then
                                     Build_Var_Dec(Data_Type, Name, False, True);
                                 else
-                                    Syntax_Error("Expected variable or function declaration.");
+                                    Syntax_Error("Error: Invalid modifier unsigned.");
                                 end if;
                                 
                             when others => Syntax_Error("Error: Invalid modifier unsigned.");
