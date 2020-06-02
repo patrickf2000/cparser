@@ -215,6 +215,17 @@ package body Unwriter is
             Space := Space - 4;
         end Write_Cond;
         
+        -- Write an else statement
+        procedure Write_Else(Position : in out Cursor) is
+        begin
+            Write_Space;
+            Put_Line(File, "} else {");
+            
+            Space := Space + 4;
+            Walk(Position);
+            Space := Space - 4;
+        end Write_Else;
+        
         -- The main walk function
         procedure Walk(Position : in out Cursor) is
             Position2 : Cursor;
@@ -272,6 +283,10 @@ package body Unwriter is
                         else
                             Write_Cond(Position2, False);
                         end if;
+                        
+                    when Cond_Else =>
+                        Position2 := First_Child(Position);
+                        Write_Else(Position2);
                         
                     when End_Block =>
                         Write_Space;
