@@ -5,7 +5,7 @@ with Lex; use Lex;
 package body Ast is
     
     -- Convert a Lex token type to a data type
-    function Token_To_Data(T : Token; Is_Unsigned : Boolean := False) return Data_Type is
+    function Token_To_Data(T : Token_Type; Is_Unsigned : Boolean := False) return Data_Type is
     begin
         if Is_Unsigned then
             case T is

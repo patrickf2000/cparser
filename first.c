@@ -3,7 +3,7 @@
 int main() {
     int x = 20;
 
-    if (x == y) {
+    if (x == 20) {
         puts("Hello");
     }
     

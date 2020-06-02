@@ -11,7 +11,7 @@ package body Lex is
     end Unget_Token;
 
     --Gets a lexical token
-    function Get_Token(File : File_Type; Buf : out Unbounded_String) return Token is
+    function Get_Token(File : File_Type) return Token is
         -- Rename packages
         package UIO renames Ada.Text_IO.Unbounded_IO;
         
@@ -42,72 +42,83 @@ package body Lex is
                 when others => return False;
             end Is_Int;
             
+            -- Local value
+            T : Token;
+            
         -- The lexical function
         begin
             -- Data types
             if Input = "void" then
-                return Void;
+                T.T_Type := Void;
             elsif Input = "char" then
-                return Char;
+                T.T_Type := Char;
             elsif Input = "short" then
-                return Short;
+                T.T_Type := Short;
             elsif Input = "int" then
-                return Int;
+                T.T_Type := Int;
             elsif Input = "long" then
-                return Long;
+                T.T_Type := Long;
             elsif Input = "float" then
-                return FloatT;
+                T.T_Type := FloatT;
             elsif Input = "double" then
-                return Double;
+                T.T_Type := Double;
                 
             -- Other keywords
             elsif Input = "unsigned" then
-                return Unsigned;
+                T.T_Type := Unsigned;
             elsif Input = "signed" then
-                return Signed;
+                T.T_Type := Signed;
                 
             -- Conditional keywords
             elsif Input = "if" then
-                return If_T;
+                T.T_Type := If_T;
             elsif Input = "else" then
-                return Else_T;
+                T.T_Type := Else_T;
                 
             elsif Input = "return" then
-                return Ret;
+                T.T_Type := Ret;
             elsif Input = "syscall" then
-                return Syscall;
+                T.T_Type := Syscall;
             elsif Is_Int(Input) then
-                return Num;
+                T.T_Type := Num;
+                T.Buf := Buf;
             elsif Is_Float(Input) then
-                return FloatL;
+                T.T_Type := FloatL;
+                T.Buf := Buf;
             else
-                return Id;
+                T.T_Type := Id;
+                T.Buf := Buf;
             end if;
+            
+            return T;
         end To_Token;
         
         -- Converts a character to a token
         function To_Token(Input : Character) return Token is
+            T : Token;
         begin
             case Input is
-                when '(' => return LParen;
-                when ')' => return RParen;
-                when '{' => return LCBrace;
-                when '}' => return RCBrace;
-                when ';' => return SemiColon;
-                when '=' => return Assign;
-                when ',' => return Comma;
-                when '+' => return Plus;
-                when '-' => return Minus;
-                when '*' => return Mul;
-                when '/' => return Div;
-                when '>' => return Greater;
-                when '<' => return Less;
-                when '!' => return Not_T;
+                when '(' => T.T_Type := LParen;
+                when ')' => T.T_Type := RParen;
+                when '{' => T.T_Type := LCBrace;
+                when '}' => T.T_Type := RCBrace;
+                when ';' => T.T_Type := SemiColon;
+                when '=' => T.T_Type := Assign;
+                when ',' => T.T_Type := Comma;
+                when '+' => T.T_Type := Plus;
+                when '-' => T.T_Type := Minus;
+                when '*' => T.T_Type := Mul;
+                when '/' => T.T_Type := Div;
+                when '>' => T.T_Type := Greater;
+                when '<' => T.T_Type := Less;
+                when '!' => T.T_Type := Not_T;
                     
-                when Character'Val(10) => return NewLn;
+                when Character'Val(10) => T.T_Type := NewLn;
                     
-                when others => return None;
+                when others => T.T_Type := None;
             end case;
+            
+            return T;
         end To_Token;
         
     -- The main part of the procedure
@@ -117,34 +128,35 @@ package body Lex is
             Cls := False;
         end if;
         
-        if UndoToken /= None then
+        if UndoToken.T_Type /= None then
             TT := UndoToken;
-            UndoToken := None;
+            UndoToken.T_Type := None;
             return TT;
         end if;
         
         if End_Of_File(File) then
-            return Eof;
+            TT.T_Type := Eof;
+            return TT;
         end if;
         
-        if NextToken /= None then
+        if NextToken.T_Type /= None then
             TT := NextToken;
-            NextToken := None;
+            NextToken.T_Type := None;
             return TT;
         end if;
     
         while not End_Of_File(File) loop
-            --Get(File, C);
             Get_Immediate(File, C);
             
             if In_Quote then
                 if C = '"' or C = ''' then
                     In_Quote := False;
-                    TT := StringL;
+                    TT.T_Type := StringL;
+                    TT.Buf := Buf;
                     Cls := True;
                     
                     if C = ''' then
-                        TT := CharL;
+                        TT.T_Type := CharL;
                     end if;
                     
                     return TT;

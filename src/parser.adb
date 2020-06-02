@@ -28,29 +28,29 @@ package body Parser is
     -- Build thre tree
     procedure Build_Tree(Ast : in out Ast_Tree.Tree; Path : String) is
         File : File_Type;
-        CurrentToken : Token := None;
-        Buf : Unbounded_String;
+        Current_Token : Token;
         Position : Cursor := Ast.Root;
         Root : Ast_Node := Ast_Global;
         Current_Scope : Unbounded_String;
         
         -- Forward declarations
         procedure Build_Func_Call(Name : Unbounded_String);
-        procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
+        procedure Build_Var_Dec(D_Type : Token_Type; Name : Unbounded_String;
                                 Var_Assign : Boolean := True;
                                 Is_Unsigned : Boolean := False);
         
         -- Builds AST node until the end of an expression
         procedure Build_Children(Parent_Node : Ast_Node; 
-                                 Stop_Token : Token := SemiColon) is
+                                 Stop_Token : Token_Type := SemiColon) is
             
             -- Local variables
             Node : Ast_Node;
             
             -- Builds an AST node based on the current position
             procedure Build_Node is
+                Buf : Unbounded_String := Current_Token.Buf;
             begin
-                case CurrentToken is
+                case Current_Token.T_Type is
                     when Num => 
                         Node := Ast_Int;
                         Node.Int_Field1 := Integer'Value(To_String(Buf));
@@ -71,13 +71,13 @@ package body Parser is
                         declare
                             Name : Unbounded_String := Buf;
                         begin
-                            CurrentToken := Get_Token(File, Buf);
+                            Current_Token := Get_Token(File);
                         
-                            if CurrentToken = LParen then
+                            if Current_Token.T_Type = LParen then
                                 Build_Func_Call(Name);
                             else
                                 Node := Ast_Id(Name);
-                                Unget_Token(CurrentToken);
+                                Unget_Token(Current_Token);
                             end if;
                         end;
                   
@@ -89,12 +89,12 @@ package body Parser is
                     when Div => Node.Node_Type := Div;
                         
                     when Assign =>
-                        CurrentToken := Get_Token(File, Buf);
+                        Current_Token := Get_Token(File);
                         
-                        if CurrentToken = Assign then
+                        if Current_Token.T_Type = Assign then
                             Node.Node_Type := Equal;
                         else
-                            Unget_Token(CurrentToken);
+                            Unget_Token(Current_Token);
                         end if;
                         
                     when Greater => Node.Node_Type := Greater;
@@ -106,20 +106,20 @@ package body Parser is
         begin
             Position := Find_In_Subtree(Position, Parent_Node);
             
-            while CurrentToken /= Stop_Token loop
+            while Current_Token.T_Type /= Stop_Token loop
                 Build_Node;
                 if Node.Node_Type /= None then
                     Append_Child(Ast, Position, Node);
                 end if;
                 
-                CurrentToken := Get_Token(File, Buf);
+                Current_Token := Get_Token(File);
             end loop;
             
             Position := Parent(Position);
         end Build_Children;
         
         -- Builds function declarations
-        procedure Build_Func(Data_Type : Token; Name : Unbounded_String) is
+        procedure Build_Func(Data_Type : Token_Type; Name : Unbounded_String) is
             Func : Ast_Node := Ast_Func(Name);
             Args : Ast_Node := Ast_Args;
             
@@ -134,24 +134,24 @@ package body Parser is
             Append_Child(Ast, Position, Args);
             Position := Find_In_Subtree(Position, Args);
             
-            CurrentToken := Get_Token(File, Buf);
+            Current_Token := Get_Token(File);
             
             -- Function arguments
-            while CurrentToken /= RParen loop
-                if CurrentToken = Comma then
+            while Current_Token.T_Type /= RParen loop
+                if Current_Token.T_Type = Comma then
                     null;
                 else
-                    Type_Token := CurrentToken;
-                    Name_Token := Get_Token(File, Buf);
+                    Type_Token := Current_Token;
+                    Name_Token := Get_Token(File);
                 
-                    Build_Var_Dec(Type_Token, Buf, False);
+                    Build_Var_Dec(Type_Token.T_Type, Buf, False);
                 end if;
                 
-                CurrentToken := Get_Token(File, Buf);
+                Current_Token := Get_Token(File);
             end loop;
             
-            while CurrentToken /= LCBrace loop
-                CurrentToken := Get_Token(File, Buf);
+            while Current_Token.T_Type /= LCBrace loop
+                Current_Token := Get_Token(File);
             end loop;
             
             Position := Parent(Position);
@@ -170,7 +170,7 @@ package body Parser is
             Var_Assign : Ast_Node := Ast_Var_Assign(Name);
         begin
             -- Drop the assignment token
-            CurrentToken := Get_Token(File, Buf);
+            Current_Token := Get_Token(File);
             
             -- Build the assignment
             Append_Child(Ast, Position, Var_Assign);
@@ -178,7 +178,7 @@ package body Parser is
         end Build_Var_Assign;
         
         -- Builds variable declarations
-        procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
+        procedure Build_Var_Dec(D_Type : Token_Type; Name : Unbounded_String;
                                 Var_Assign : Boolean := True;
                                 Is_Unsigned : Boolean := False) is
             Var_Dec : Ast_Node := Ast_Var_Dec(Name);
@@ -218,8 +218,8 @@ package body Parser is
             Append_Child(Ast, Position, Cmp);
             Build_Children(Cmp, RParen);
             
-            while CurrentToken /= LCBrace loop
-                CurrentToken := Get_Token(File, Buf);
+            while Current_Token.T_Type /= LCBrace loop
+                Current_Token := Get_Token(File);
             end loop;
         end Build_Cond;
         
@@ -240,26 +240,27 @@ package body Parser is
         -- Start passing
         Open(File, In_File, Path);
         
-        while CurrentToken /= Eof loop
-            CurrentToken := Get_Token(File, Buf);
+        while Current_Token.T_Type /= Eof loop
+            Current_Token := Get_Token(File);
             
-            case CurrentToken is
+            case Current_Token.T_Type is
                 -- Could be an unsigned variable or float declaration
                 when Unsigned =>
                     declare
-                        Data_Type : Token := Get_Token(File, Buf);
-                        Name_Token : Token := Get_Token(File, Buf);
-                        Name : Unbounded_String := Buf;
+                        Data_Token : Token := Get_Token(File);
+                        Data_Type : Token_Type := Data_Token.T_Type;
+                        Name_Token : Token := Get_Token(File);
+                        Name : Unbounded_String := Name_Token.Buf;
                     begin
-                        CurrentToken := Get_Token(File, Buf);
+                        Current_Token := Get_Token(File);
                         
                         case Data_Type is
                             when Char | Short | Int | Long =>
-                                if CurrentToken = LParen then
+                                if Current_Token.T_Type = LParen then
                                     Build_Func(Data_Type, Name);
-                                elsif CurrentToken = Assign then
+                                elsif Current_Token.T_Type = Assign then
                                     Build_Var_Dec(Data_Type, Name, Is_Unsigned => True);
-                                elsif CurrentToken = SemiColon then
+                                elsif Current_Token.T_Type = SemiColon then
                                     Build_Var_Dec(Data_Type, Name, False, True);
                                 else
                                     Syntax_Error("Invalid modifier unsigned.");
@@ -271,10 +272,10 @@ package body Parser is
                 
                 -- Could be variable declaration or function declaration
                 when Signed | Void | Char | Short | Int | Long | FloatT | Double =>
-                    if CurrentToken = Signed then
-                        CurrentToken := Get_Token(File, Buf);
+                    if Current_Token.T_Type = Signed then
+                        Current_Token := Get_Token(File);
                         
-                        case CurrentToken is
+                        case Current_Token.T_Type is
                             when Void | FloatT | Double =>
                                 Syntax_Error("The signed keyword cannot be used with void, float, or double.");
                                 
@@ -283,17 +284,18 @@ package body Parser is
                     end if;
                     
                     declare
-                        Data_Type : Token := CurrentToken;
-                        NameToken : Token := Get_Token(File, Buf);
-                        Name : Unbounded_String := Buf;
+                        Data_Token : Token := Current_Token;
+                        Data_Type : Token_Type := Data_Token.T_Type;
+                        Name_Token : Token := Get_Token(File);
+                        Name : Unbounded_String := Name_Token.Buf;
                     begin
-                        CurrentToken := Get_Token(File, Buf);
+                        Current_Token := Get_Token(File);
 
-                        if CurrentToken = LParen then
+                        if Current_Token.T_Type = LParen then
                             Build_Func(Data_Type, Name);
-                        elsif CurrentToken = Assign then
+                        elsif Current_Token.T_Type = Assign then
                             Build_Var_Dec(Data_Type, Name);
-                        elsif CurrentToken = SemiColon then
+                        elsif Current_Token.T_Type = SemiColon then
                             Build_Var_Dec(Data_Type, Name, False);
                         else
                             Syntax_Error("Expected variable or function declaration.");
@@ -306,15 +308,15 @@ package body Parser is
                         Name : Unbounded_String := Buf;
                     begin
                         if To_String(Name) = "#include" then
-                            while CurrentToken /= NewLn loop
-                                CurrentToken := Get_Token(File, Buf);
+                            while Current_Token.T_Type /= NewLn loop
+                                Current_Token := Get_Token(File);
                             end loop;
                         else
-                            CurrentToken := Get_Token(File, Buf);
+                            Current_Token := Get_Token(File);
                         
-                            if CurrentToken = LParen then
+                            if Current_Token.T_Type = LParen then
                                 Build_Func_Call(Name);
-                            elsif CurrentToken = Assign then
+                            elsif Current_Token.T_Type = Assign then
                                 Build_Var_Assign(Name);
                             else
                                 Syntax_Error("Expected variable declaration or function call.");
@@ -325,9 +327,9 @@ package body Parser is
                 -- Conditional statement
                 when If_T => Build_Cond;    
                 when Else_T =>
-                    CurrentToken := Get_Token(File, Buf);
+                    Current_Token := Get_Token(File);
                     
-                    if CurrentToken = If_T then
+                    if Current_Token.T_Type = If_T then
                         Build_Cond(True);
                     else
                         Build_Else;
@@ -351,7 +353,6 @@ package body Parser is
             declare
                 Ln_No : Positive_Count := Line(File);
             begin
-                Print_Token(CurrentToken, Buf);
                 Put_Line(Exception_Message(E));
                 Syntax_Error("Encountered conversion error.", Ln_No'Image);
             end;

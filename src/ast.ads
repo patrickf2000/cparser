@@ -32,7 +32,7 @@ package Ast is
     end record;
     
     -- Conversion functions
-    function Token_To_Data(T : Token; Is_Unsigned : Boolean := False) return Data_Type;
+    function Token_To_Data(T : Token_Type; Is_Unsigned : Boolean := False) return Data_Type;
     
     -- Helper functions
     function Ast_Global return Ast_Node;

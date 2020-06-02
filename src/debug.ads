@@ -7,7 +7,7 @@ with Var_Vector;
 package Debug is
     
     -- Prints a lexical token
-    procedure Print_Token(TT : Token; Buf : Unbounded_String);
+    -- procedure Print_Token(TT : Token; Buf : Unbounded_String);
     
     -- Prints an AST
     procedure Print_Tree(Ast : in Ast_Tree.Tree);
