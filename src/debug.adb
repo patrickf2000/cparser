@@ -133,6 +133,9 @@ package body Debug is
                 when Mul => Put_Line("Op: *");
                 when Div => Put_Line("Op: /");
                     
+                -- Logical operators
+                when Greater => Put_Line("OP: >");
+                    
                 -- All others
                 when others => Put_Line("??");
             end case;

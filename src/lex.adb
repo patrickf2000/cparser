@@ -101,6 +101,8 @@ package body Lex is
                 when '*' => return Mul;
                 when '/' => return Div;
                 when '>' => return Greater;
+                when '<' => return Less;
+                when '!' => return Not_T;
                     
                 when Character'Val(10) => return NewLn;
                     
