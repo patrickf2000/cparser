@@ -11,10 +11,11 @@ package Ast is
 
     -- Represents node types
     type Ast_Type is (None, Scope, Func, Func_Call, Ret,
-        Comma, Param, Args,
-        VarDec, VarAssign,
-        Add, Sub, Mul, Div,
-        Id, CharL, Int, FloatL, Math, Str);
+                      Comma, Param, Args,
+                      VarDec, VarAssign,
+                      Cond_If, Cond_Elif, Cond_Else,
+                      Add, Sub, Mul, Div,
+                      Id, CharL, Int, FloatL, Math, Str);
     
     -- Unique identifier
     UID : Integer := 1;
@@ -48,4 +49,7 @@ package Ast is
     function Ast_Param return Ast_Node;
     function Ast_Args return Ast_Node;
     function Ast_Math return Ast_Node;
+    function Ast_If return Ast_Node;
+    function Ast_Elif return Ast_Node;
+    function Ast_Else return Ast_Node;
 end Ast;

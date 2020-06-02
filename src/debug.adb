@@ -111,6 +111,10 @@ package body Debug is
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
                     
+                when Cond_If => Put_Line("If");
+                when Cond_Elif => Put_Line("Elif");
+                when Cond_Else => Put_Line("Else");
+                    
                 -- Identifiers and literals
                 when Int => Put("No: "); Put(Current.Int_Field1, 0); New_Line;
                 when FloatL => Put("Flt: "); Put(Current.Float_Field1, 0); New_Line;

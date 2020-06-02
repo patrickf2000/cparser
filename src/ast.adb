@@ -187,4 +187,34 @@ package body Ast is
         return Node;
     end Ast_Math;
     
+    -- Returns an if statement
+    function Ast_If return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Cond_If;
+        return Node;
+    end Ast_If;
+    
+    -- Returns an else-if statement
+    function Ast_Elif return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Cond_Elif;
+        return Node;
+    end Ast_Elif;
+    
+    -- Returns an else statement
+    function Ast_Else return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Cond_Else;
+        return Node;
+    end Ast_Else;
+    
 end Ast;

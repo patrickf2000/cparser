@@ -183,6 +183,33 @@ package body Parser is
             Build_Children(Ret_Node);
         end Build_Return;
         
+        -- Build a conditional statement
+        procedure Build_Cond(Is_Elif : Boolean := False) is
+            Cond_Node : Ast_Node;
+        begin
+            if Is_Elif then
+                Cond_Node := Ast_Elif;
+            else
+                Cond_Node := Ast_If;
+            end if;
+            
+            Append_Child(Ast, Position, Cond_Node);
+            
+            while CurrentToken /= LCBrace loop
+                CurrentToken := Get_Token(File, Buf);
+            end loop;
+            
+            Position := Find_In_Subtree(Position, Cond_Node);
+        end Build_Cond;
+        
+        -- Builds an else statement
+        procedure Build_Else is
+            Else_Node : Ast_Node := Ast_Else;
+        begin
+            Append_Child(Ast, Position, Else_Node);
+            Position := Find_In_Subtree(Position, Else_Node);
+        end Build_Else;
+        
     -- The main parsing area
     begin
         -- Add the root node
@@ -271,6 +298,17 @@ package body Parser is
                             end if;
                         end if;
                     end;
+                    
+                -- Conditional statement
+                when If_T => Build_Cond;    
+                when Else_T =>
+                    CurrentToken := Get_Token(File, Buf);
+                    
+                    if CurrentToken = If_T then
+                        Build_Cond(True);
+                    else
+                        Build_Else;
+                    end if;
                     
                 -- End blck
                 when RCBrace => Position := Parent(Position);

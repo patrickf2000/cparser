@@ -60,11 +60,17 @@ package body Lex is
             elsif Input = "double" then
                 return Double;
                 
-                -- Other keywords
+            -- Other keywords
             elsif Input = "unsigned" then
                 return Unsigned;
             elsif Input = "signed" then
                 return Signed;
+                
+            -- Conditional keywords
+            elsif Input = "if" then
+                return If_T;
+            elsif Input = "else" then
+                return Else_T;
                 
             elsif Input = "return" then
                 return Ret;
@@ -94,6 +100,8 @@ package body Lex is
                 when '-' => return Minus;
                 when '*' => return Mul;
                 when '/' => return Div;
+                when '>' => return Greater;
+                    
                 when others => return None;
             end case;
         end To_Token;
