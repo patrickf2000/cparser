@@ -218,7 +218,6 @@ package body Unwriter is
         -- The main walk function
         procedure Walk(Position : in out Cursor) is
             Position2 : Cursor;
-            Is_Func : Boolean := False;
         begin
             if Has_Element(Position) then
                 Current := Element(Position);
@@ -228,7 +227,6 @@ package body Unwriter is
                     when Scope | Func =>
                         if Current.Node_Type = Func then
                             Write_Func(Position);
-                            Is_Func := True;
                         end if;
                         
                         if Child_Count(Position) > 0 then
@@ -236,12 +234,6 @@ package body Unwriter is
                             Position2 := First_Child(Position);
                             Walk(Position2);
                             Space := Space - 4;
-                        end if;
-                        
-                        if Is_Func then
-                            Put_Line(File, "}");
-                            Put_Line(File, "");
-                            Is_Func := False;
                         end if;
                     
                     -- Variable declarations
@@ -280,6 +272,10 @@ package body Unwriter is
                         else
                             Write_Cond(Position2, False);
                         end if;
+                        
+                    when End_Block =>
+                        Write_Space;
+                        Put_Line(File, "}");
                         
                     when others => null;
                 end case;

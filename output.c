@@ -5,6 +5,8 @@ int main() {
     x = 20;
     if (x == 20) {
         puts();
+    } else if (x == 100) {
+        puts();
+    }
     return 0;
 }
-

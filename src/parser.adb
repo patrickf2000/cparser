@@ -337,8 +337,21 @@ package body Parser is
                         Build_Else;
                     end if;
                     
-                -- End blck
-                when RCBrace => Position := Parent(Position);
+                -- End block
+                when RCBrace => 
+                    Position := Parent(Position);
+                    
+                    declare
+                        Next_Token : Token := Get_Token(File);
+                        End_B : Ast_Node;
+                    begin
+                        if Next_Token.T_Type = Else_T then
+                            Unget_Token(Next_Token);
+                        else
+                            End_B.Node_Type := End_Block;
+                            Append_Child(Ast, Position, End_B);
+                        end if;
+                    end;
                 
                 -- Return statements
                 when Ret => Build_Return;

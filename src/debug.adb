@@ -111,6 +111,7 @@ package body Debug is
                 when VarDec => Print_Var(True);
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");
+                when End_Block => Put_Line("End");
                     
                 when Cond_If => Put_Line("If");
                 when Cond_Elif => Put_Line("Elif");

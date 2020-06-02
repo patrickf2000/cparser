@@ -16,7 +16,8 @@ package Ast is
                       Cond_If, Cond_Elif, Cond_Else,
                       Add, Sub, Mul, Div,
                       Equal, Greater,
-                      Id, CharL, Int, FloatL, Math, Str);
+                      Id, CharL, Int, FloatL, Math, Str,
+                      End_Block);
     
     -- Unique identifier
     UID : Integer := 1;
