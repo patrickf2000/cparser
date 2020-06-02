@@ -3,6 +3,7 @@
 void cmp(int x) {
     if (x > 20) {
         puts("Greater");
+        
         if (x > 50) {
             puts("Even greater!");
         } else {
@@ -14,9 +15,11 @@ void cmp(int x) {
         puts("Equal");
     }
 }
+
 int main() {
     cmp(20);
     cmp(1);
     cmp(100);
+    
     return 0;
 }

@@ -98,6 +98,7 @@ package body Parser is
                         end if;
                         
                     when Greater => Node.Node_Type := Greater;
+                    when Less => Node.Node_Type := Less;
                 
                     when others => Node.Node_Type := None;
                 end case;

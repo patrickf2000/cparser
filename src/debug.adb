@@ -137,6 +137,7 @@ package body Debug is
                 -- Logical operators
                 when Equal => Put_Line("Op: ==");
                 when Greater => Put_Line("OP: >");
+                when Less => Put_Line("OP: <");
                     
                 -- All others
                 when others => Put_Line("??");

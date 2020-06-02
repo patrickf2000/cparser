@@ -88,6 +88,7 @@ package body Unwriter is
                         
                     when Equal => Put(File, " == ");
                     when Greater => Put(File, " > ");
+                    when Less => Put(File, " < ");
                         
                     when Func_Call =>
                         declare
