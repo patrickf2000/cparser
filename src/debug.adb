@@ -6,8 +6,9 @@ with Ada.Containers; use Ada.Containers;
 
 with Lex; use Lex;
 with Ast; use Ast;
+with Types; use Types;
 with Ast_Tree;
-
+with Var_Vector;
 
 package body Debug is
     
@@ -148,5 +149,19 @@ package body Debug is
         Position := First_Child(Position);
         Walk(Position);
     end Print_Tree;
+    
+    -- Prints out the variable declared in our unit
+    --
+    procedure Print_Vars(Vars : in Var_Vector.Vector) is
+    begin
+        New_Line;
+        Put_Line("All variables:");
+        
+        for V of Vars loop
+            Put("[" & To_String(V.Scope) & "] ");
+            Print_Data_Type(V.D_Type);
+            Put_Line(" " & To_String(V.Name));
+        end loop;
+    end Print_Vars;
     
 end Debug;

@@ -7,6 +7,7 @@ with Ada.Containers; use Ada.Containers;
 
 with Ast_Tree; use Ast_Tree;
 with Ast; use Ast;
+with Types; use Types;
 
 package body Unwriter is
 

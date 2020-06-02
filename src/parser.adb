@@ -10,6 +10,7 @@ with Ast_Tree; use Ast_Tree;
 with Ast_Vector;
 with Ast_IMap;
 with Ast; use Ast;
+with Types; use Types;
 
 -- The main parser area
 package body Parser is
@@ -28,10 +29,11 @@ package body Parser is
         Buf : Unbounded_String;
         Position : Cursor := Ast.Root;
         Root : Ast_Node := Ast_Global;
+        Current_Scope : Unbounded_String;
         
         -- Forward declarations
         procedure Build_Func_Call(Name : Unbounded_String);
-        procedure Build_Var_Dec(Data_Type : Token; Name : Unbounded_String;
+        procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
                                Var_Assign : Boolean := True);
         
         -- Builds AST node until the end of an expression
@@ -108,6 +110,7 @@ package body Parser is
             
             Type_Token, Name_Token : Token;
         begin
+            Current_Scope := Name;
             Func.D_Type := Token_To_Data(Data_Type);
             
             Append_Child(Ast, Position, Func);
@@ -156,11 +159,14 @@ package body Parser is
         end Build_Var_Assign;
         
         -- Builds variable declarations
-        procedure Build_Var_Dec(Data_Type : Token; Name : Unbounded_String;
+        procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
                                Var_Assign : Boolean := True) is
             Var_Dec : Ast_Node := Ast_Var_Dec(Name);
+            DT : Data_Type := Token_To_Data(D_Type);
+            V : Var := (Name => Name, D_Type => DT, Scope => Current_Scope);
         begin
-            Var_Dec.D_Type := Token_To_Data(Data_Type);
+            Vars.Append(V);
+            Var_Dec.D_Type := DT;
             Append_Child(Ast, Position, Var_Dec);
             
             if Var_Assign then

@@ -41,7 +41,7 @@ begin
     
     if not Silent then
         Print_Tree(Ast);
-        Get_Vars(Ast, "main");
+        Print_Vars(Vars);
     end if;
     
     Unwrite("output.c", Ast);

@@ -4,6 +4,7 @@ with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
 
 with Lex; use Lex;
+with Types; use Types;
 
 -- Ast package declaration
 package Ast is
@@ -14,8 +15,6 @@ package Ast is
         VarDec, VarAssign,
         Add, Sub, Mul, Div,
         Id, CharL, Int, FloatL, Math, Str);
-    
-    type Data_Type is (None, Void, Char, Short, Int, Long, FloatT, Double);
     
     -- Unique identifier
     UID : Integer := 1;
