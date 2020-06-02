@@ -3,6 +3,7 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Multiway_Trees;
 with Ada.Containers; use Ada.Containers;
+with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 with Lex; use Lex;
@@ -11,13 +12,15 @@ with Ast_Vector;
 with Ast_IMap;
 with Ast; use Ast;
 with Types; use Types;
+with Debug; use Debug;
 
 -- The main parser area
 package body Parser is
     
     -- Syntax error
-    procedure Syntax_Error(Msg : String) is
+    procedure Syntax_Error(Msg : String; Ln_No : String := "") is
     begin
+        Put_Line("At: " & Ln_No);
         Put_Line("[Syntax Error] " & Msg);
         OS_Exit(1);
     end Syntax_Error;
@@ -84,6 +87,15 @@ package body Parser is
                     when Minus => Node.Node_Type := Sub;
                     when Mul => Node.Node_Type := Mul;
                     when Div => Node.Node_Type := Div;
+                        
+                    when Assign =>
+                        CurrentToken := Get_Token(File, Buf);
+                        
+                        if CurrentToken = Assign then
+                            Node.Node_Type := Equal;
+                        else
+                            Unget_Token(CurrentToken);
+                        end if;
                         
                     when Greater => Node.Node_Type := Greater;
                 
@@ -157,6 +169,10 @@ package body Parser is
         procedure Build_Var_Assign(Name : Unbounded_String) is
             Var_Assign : Ast_Node := Ast_Var_Assign(Name);
         begin
+            -- Drop the assignment token
+            CurrentToken := Get_Token(File, Buf);
+            
+            -- Build the assignment
             Append_Child(Ast, Position, Var_Assign);
             Build_Children(Var_Assign);
         end Build_Var_Assign;
@@ -329,6 +345,16 @@ package body Parser is
         end loop;
         
         Close(File);
+        
+    exception
+        when E : Constraint_Error =>
+            declare
+                Ln_No : Positive_Count := Line(File);
+            begin
+                Print_Token(CurrentToken, Buf);
+                Put_Line(Exception_Message(E));
+                Syntax_Error("Encountered conversion error.", Ln_No'Image);
+            end;
     end Build_Tree;
     
     -- This runs through the tree and consolidates it into more meaningful parts

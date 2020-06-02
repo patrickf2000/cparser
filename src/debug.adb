@@ -134,6 +134,7 @@ package body Debug is
                 when Div => Put_Line("Op: /");
                     
                 -- Logical operators
+                when Equal => Put_Line("Op: ==");
                 when Greater => Put_Line("OP: >");
                     
                 -- All others

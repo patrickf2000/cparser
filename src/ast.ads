@@ -15,7 +15,7 @@ package Ast is
                       VarDec, VarAssign,
                       Cond_If, Cond_Elif, Cond_Else,
                       Add, Sub, Mul, Div,
-                      Greater,
+                      Equal, Greater,
                       Id, CharL, Int, FloatL, Math, Str);
     
     -- Unique identifier
