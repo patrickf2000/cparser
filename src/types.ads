@@ -2,7 +2,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Types is
 
-    type Data_Type is (None, Void, Char, Short, Int, Long, FloatT, Double);
+    type Data_Type is (None, Void, Char, Short, Int, Long, FloatT, Double,
+                      UChar, UShort, UInt, ULong, LDouble , LL);
     
     -- Represents a variable
     type Var is record

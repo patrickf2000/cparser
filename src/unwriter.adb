@@ -40,6 +40,7 @@ package body Unwriter is
             case Current.D_Type is
                 when Void => Put(File, "void");
                 when Char => Put(File, "char");
+                when UChar => Put(File, "unsigned char");
                 when Short => Put(File, "short");
                 when Int => Put(File, "int");
                 when Long => Put(File, "long");

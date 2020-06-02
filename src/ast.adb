@@ -5,9 +5,19 @@ with Lex; use Lex;
 package body Ast is
     
     -- Convert a Lex token type to a data type
-    function Token_To_Data(T : Token) return Data_Type is
+    function Token_To_Data(T : Token; Is_Unsigned : Boolean := False) return Data_Type is
     begin
-        case T is
+        if Is_Unsigned then
+            case T is
+            when Char => return UChar;
+            when Short => return UShort;
+            when Int => return UInt;
+            when Long => return ULong;
+           
+            when others => return None;
+            end case; 
+        else
+            case T is
             when Void => return Void;
             when Char => return Char;
             when Short => return Short;
@@ -17,7 +27,8 @@ package body Ast is
             when Double => return Double;
            
             when others => return None;
-        end case;
+            end case;
+        end if;
     end Token_To_Data;
     
     -- Creates a scope node

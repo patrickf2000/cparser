@@ -60,7 +60,9 @@ package body Lex is
             elsif Input = "double" then
                 return Double;
                 
-            -- Other keywords
+                -- Other keywords
+            elsif Input = "unsigned" then
+                return Unsigned;
             elsif Input = "return" then
                 return Ret;
             elsif Input = "syscall" then

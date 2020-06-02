@@ -1,11 +1,10 @@
 #include <stdio.h>
 
 int main() {
-    int x;
-    x = 20;
-    int y;
-    y = 30;
-    z = x + y;
+    char c1;
+    c1 = 'a';
+    unsigned char c2;
+    c2 = 'b';
     return 0;
 }
 

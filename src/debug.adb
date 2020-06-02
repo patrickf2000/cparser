@@ -39,6 +39,7 @@ package body Debug is
         case D_Type is
             when Void => Put("Void");
             when Char => Put("Char");
+            when UChar => Put("UChar");
             when Short => Put("Short");
             when Int => Put("Int");
             when Long => Put("Long");

@@ -34,7 +34,8 @@ package body Parser is
         -- Forward declarations
         procedure Build_Func_Call(Name : Unbounded_String);
         procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
-                               Var_Assign : Boolean := True);
+                                Var_Assign : Boolean := True;
+                                Is_Unsigned : Boolean := False);
         
         -- Builds AST node until the end of an expression
         procedure Build_Children(Parent_Node : Ast_Node; 
@@ -160,9 +161,10 @@ package body Parser is
         
         -- Builds variable declarations
         procedure Build_Var_Dec(D_Type : Token; Name : Unbounded_String;
-                               Var_Assign : Boolean := True) is
+                                Var_Assign : Boolean := True;
+                                Is_Unsigned : Boolean := False) is
             Var_Dec : Ast_Node := Ast_Var_Dec(Name);
-            DT : Data_Type := Token_To_Data(D_Type);
+            DT : Data_Type := Token_To_Data(D_Type, Is_Unsigned);
             V : Var := (Name => Name, D_Type => DT, Scope => Current_Scope);
         begin
             Vars.Append(V);
@@ -194,6 +196,31 @@ package body Parser is
             CurrentToken := Get_Token(File, Buf);
             
             case CurrentToken is
+                -- Could be an unsigned variable or float declaration
+                when Unsigned =>
+                    declare
+                        Data_Type : Token := Get_Token(File, Buf);
+                        Name_Token : Token := Get_Token(File, Buf);
+                        Name : Unbounded_String := Buf;
+                    begin
+                        CurrentToken := Get_Token(File, Buf);
+                        
+                        case Data_Type is
+                            when Char | Short | Int | Long =>
+                                if CurrentToken = LParen then
+                                    Build_Func(Data_Type, Name);
+                                elsif CurrentToken = Assign then
+                                    Build_Var_Dec(Data_Type, Name, Is_Unsigned => True);
+                                elsif CurrentToken = SemiColon then
+                                    Build_Var_Dec(Data_Type, Name, False, True);
+                                else
+                                    Syntax_Error("Expected variable or function declaration.");
+                                end if;
+                                
+                            when others => Syntax_Error("Error: Invalid modifier unsigned.");
+                        end case;
+                    end;
+                
                 -- Could be variable declaration or function declaration
                 when Void | Char | Short | Int | Long | FloatT | Double =>
                     declare
