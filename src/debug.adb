@@ -107,6 +107,7 @@ package body Debug is
                 when Func_Call => Print_Func_Call;
                 when Param => Put_Line("Param");
                 when Args => Put_Line("Args");
+                when Cond => Put_Line("Cond");
                 when VarDec => Print_Var(True);
                 when VarAssign => Print_Var(False);
                 when Ret => Put_Line("Ret");

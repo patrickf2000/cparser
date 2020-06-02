@@ -177,6 +177,16 @@ package body Ast is
         return Node;
     end Ast_Args;
     
+    -- Returns a conditional node
+    function Ast_Cond return Ast_Node is
+        Node : Ast_Node;
+    begin
+        UID := UID + 1;
+        Node.UID := UID;
+        Node.Node_Type := Cond;
+        return Node;
+    end Ast_Cond;
+    
     -- Returns math node
     function Ast_Math return Ast_Node is
         Node : Ast_Node;

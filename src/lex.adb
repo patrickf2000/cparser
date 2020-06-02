@@ -102,6 +102,8 @@ package body Lex is
                 when '/' => return Div;
                 when '>' => return Greater;
                     
+                when Character'Val(10) => return NewLn;
+                    
                 when others => return None;
             end case;
         end To_Token;
@@ -151,8 +153,7 @@ package body Lex is
                 case C is
                     when '"' | ''' => In_Quote := True;
                         
-                    when ' ' | Character'Val(9) |
-                        Character'Val(10) =>
+                    when ' ' | Character'Val(9) =>
                         if Length(Buf) > 0 then
                             TT := To_Token(To_String(Buf));
                             Cls := True;
@@ -160,7 +161,9 @@ package body Lex is
                         end if;
                     
                     when '(' | ')' | '{' | '}' | '=' | ';' | ',' |
-                        '+' | '-' | '*' | '/' =>
+                        '+' | '-' | '*' | '/' |
+                        '>' | '<' | '!' |
+                        Character'Val(10) =>
                         TT := To_Token(C);
                         if Length(Buf) > 0 then
                             NextToken := TT;

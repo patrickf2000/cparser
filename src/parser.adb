@@ -84,8 +84,10 @@ package body Parser is
                     when Minus => Node.Node_Type := Sub;
                     when Mul => Node.Node_Type := Mul;
                     when Div => Node.Node_Type := Div;
+                        
+                    when Greater => Node.Node_Type := Greater;
                 
-                    when others => null;
+                    when others => Node.Node_Type := None;
                 end case;
             end Build_Node;
             
@@ -186,6 +188,7 @@ package body Parser is
         -- Build a conditional statement
         procedure Build_Cond(Is_Elif : Boolean := False) is
             Cond_Node : Ast_Node;
+            Cmp : Ast_Node := Ast_Cond;
         begin
             if Is_Elif then
                 Cond_Node := Ast_Elif;
@@ -194,12 +197,14 @@ package body Parser is
             end if;
             
             Append_Child(Ast, Position, Cond_Node);
+            Position := Find_In_Subtree(Position, Cond_Node);
+            
+            Append_Child(Ast, Position, Cmp);
+            Build_Children(Cmp, RParen);
             
             while CurrentToken /= LCBrace loop
                 CurrentToken := Get_Token(File, Buf);
             end loop;
-            
-            Position := Find_In_Subtree(Position, Cond_Node);
         end Build_Cond;
         
         -- Builds an else statement
@@ -285,7 +290,9 @@ package body Parser is
                         Name : Unbounded_String := Buf;
                     begin
                         if To_String(Name) = "#include" then
-                            CurrentToken := Get_Token(File, Buf);
+                            while CurrentToken /= NewLn loop
+                                CurrentToken := Get_Token(File, Buf);
+                            end loop;
                         else
                             CurrentToken := Get_Token(File, Buf);
                         
