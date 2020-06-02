@@ -214,15 +214,26 @@ package body Parser is
                                 elsif CurrentToken = SemiColon then
                                     Build_Var_Dec(Data_Type, Name, False, True);
                                 else
-                                    Syntax_Error("Error: Invalid modifier unsigned.");
+                                    Syntax_Error("Invalid modifier unsigned.");
                                 end if;
                                 
-                            when others => Syntax_Error("Error: Invalid modifier unsigned.");
+                            when others => Syntax_Error("Invalid modifier unsigned.");
                         end case;
                     end;
                 
                 -- Could be variable declaration or function declaration
-                when Void | Char | Short | Int | Long | FloatT | Double =>
+                when Signed | Void | Char | Short | Int | Long | FloatT | Double =>
+                    if CurrentToken = Signed then
+                        CurrentToken := Get_Token(File, Buf);
+                        
+                        case CurrentToken is
+                            when Void | FloatT | Double =>
+                                Syntax_Error("The signed keyword cannot be used with void, float, or double.");
+                                
+                            when others => null;
+                        end case;
+                    end if;
+                    
                     declare
                         Data_Type : Token := CurrentToken;
                         NameToken : Token := Get_Token(File, Buf);

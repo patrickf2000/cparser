@@ -9,6 +9,8 @@ int main() {
     s1 = 20;
     unsigned int i;
     i = 39;
+    int x;
+    x = 30;
     return 0;
 }
 

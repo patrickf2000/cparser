@@ -8,5 +8,7 @@ int main() {
     
     unsigned int i = 39;
     
+    signed int x = 30;
+    
     return 0;
 }

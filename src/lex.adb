@@ -63,6 +63,9 @@ package body Lex is
                 -- Other keywords
             elsif Input = "unsigned" then
                 return Unsigned;
+            elsif Input = "signed" then
+                return Signed;
+                
             elsif Input = "return" then
                 return Ret;
             elsif Input = "syscall" then
