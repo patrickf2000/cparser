@@ -5,7 +5,6 @@ with Ada.Command_Line;
 with Ast_Tree; use Ast_Tree;
 with Parser; use Parser;
 with Debug; use Debug;
-with Analyzer; use Analyzer;
 with Unwriter; use Unwriter;
 
 procedure Main is
