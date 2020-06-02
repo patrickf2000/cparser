@@ -25,6 +25,7 @@ package body Unwriter is
         
         -- Forward declaration
         procedure Write_Func_Call(Position : in out Cursor);
+        procedure Walk(Position : in out Cursor);
         
         -- Writes out the spacing
         procedure Write_Space is
@@ -84,6 +85,9 @@ package body Unwriter is
                     when Sub => Put(File, " - ");
                     when Mul => Put(File, " * ");
                     when Div => Put(File, " / ");
+                        
+                    when Equal => Put(File, " == ");
+                    when Greater => Put(File, " > ");
                         
                     when Func_Call =>
                         declare
@@ -188,6 +192,29 @@ package body Unwriter is
             Put_Line(File, ";");
         end Write_Ret;
         
+        -- Write conditional statement
+        procedure Write_Cond(Position : in out Cursor; Is_Elif : Boolean) is
+            Position2 : Cursor;
+        begin
+            Write_Space;
+            
+            if Is_Elif then
+                Put(File, "} else if (");
+            else
+                Put(File, "if (");
+            end if;
+            
+            Position2 := First_Child(Position);
+            
+            Write_Children(Position2);
+            Put_Line(File, ") {");
+            
+            Position := Next_Sibling(Position);
+            Space := Space + 4;
+            Walk(Position);
+            Space := Space - 4;
+        end Write_Cond;
+        
         -- The main walk function
         procedure Walk(Position : in out Cursor) is
             Position2 : Cursor;
@@ -243,6 +270,16 @@ package body Unwriter is
                     when Ret =>
                         Position2 := First_Child(Position);
                         Write_Ret(Position2);
+                        
+                    -- Conditional statements
+                    when Cond_If | Cond_Elif =>
+                        Position2 := First_Child(Position);
+                        
+                        if Current.Node_Type = Cond_Elif then
+                            Write_Cond(Position2, True);
+                        else
+                            Write_Cond(Position2, False);
+                        end if;
                         
                     when others => null;
                 end case;
