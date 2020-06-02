@@ -5,6 +5,7 @@ with Ada.Command_Line;
 with Ast_Tree; use Ast_Tree;
 with Parser; use Parser;
 with Debug; use Debug;
+with Analyzer; use Analyzer;
 with Unwriter; use Unwriter;
 
 procedure Main is
@@ -40,6 +41,7 @@ begin
     
     if not Silent then
         Print_Tree(Ast);
+        Get_Vars(Ast, "main");
     end if;
     
     Unwrite("output.c", Ast);
