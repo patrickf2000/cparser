@@ -22,7 +22,7 @@ package Lex is
     UndoToken : Token;
     In_Quote : Boolean := False;
     
-    Buf : Unbounded_String;
+    Buffer : Unbounded_String;
         
     procedure Unget_Token(T : Token);
     function Get_Token(File : File_Type) return Token;

@@ -81,13 +81,13 @@ package body Lex is
                 T.T_Type := Syscall;
             elsif Is_Int(Input) then
                 T.T_Type := Num;
-                T.Buf := Buf;
+                T.Buf := Buffer;
             elsif Is_Float(Input) then
                 T.T_Type := FloatL;
-                T.Buf := Buf;
+                T.Buf := Buffer;
             else
                 T.T_Type := Id;
-                T.Buf := Buf;
+                T.Buf := Buffer;
             end if;
             
             return T;
@@ -147,8 +147,8 @@ package body Lex is
                 if C = '"' or C = ''' then
                     In_Quote := False;
                     TT.T_Type := StringL;
-                    TT.Buf := Buf;
-                    Set_Unbounded_String(Buf, "");
+                    TT.Buf := Buffer;
+                    Set_Unbounded_String(Buffer, "");
                     
                     if C = ''' then
                         TT.T_Type := CharL;
@@ -156,16 +156,16 @@ package body Lex is
                     
                     return TT;
                 else
-                    Append(Buf, C);
+                    Append(Buffer, C);
                 end if;
             else
                 case C is
                     when '"' | ''' => In_Quote := True;
                         
                     when ' ' | Character'Val(9) =>
-                        if Length(Buf) > 0 then
-                            TT := To_Token(To_String(Buf));
-                            Set_Unbounded_String(Buf, "");
+                        if Length(Buffer) > 0 then
+                            TT := To_Token(To_String(Buffer));
+                            Set_Unbounded_String(Buffer, "");
                             return TT;
                         end if;
                     
@@ -174,15 +174,15 @@ package body Lex is
                         '>' | '<' | '!' |
                         Character'Val(10) =>
                         TT := To_Token(C);
-                        if Length(Buf) > 0 then
+                        if Length(Buffer) > 0 then
                             NextToken := TT;
-                            TT := To_Token(To_String(Buf));
-                            Set_Unbounded_String(Buf, "");
+                            TT := To_Token(To_String(Buffer));
+                            Set_Unbounded_String(Buffer, "");
                             return TT;
                         end if;
                         return TT;
                     
-                    when others => Append(Buf, C);
+                    when others => Append(Buffer, C);
                 end case;
             end if;
         end loop;
