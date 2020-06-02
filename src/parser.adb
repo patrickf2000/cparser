@@ -504,7 +504,8 @@ package body Parser is
                 Current := Element(Position);
                 
                 case Current.Node_Type is
-                    when Scope | Func =>
+                    when Scope | Func | 
+                         Cond_If | Cond_Elif | Cond_Else =>
                         if Child_Count(Position) > 0 then
                             Position2 := First_Child(Position);
                             Walk(Position2);
