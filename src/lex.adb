@@ -123,11 +123,6 @@ package body Lex is
         
     -- The main part of the procedure
     begin
-        if Cls then
-            Set_Unbounded_String(Buf, "");
-            Cls := False;
-        end if;
-        
         if UndoToken.T_Type /= None then
             TT := UndoToken;
             UndoToken.T_Type := None;
@@ -153,7 +148,7 @@ package body Lex is
                     In_Quote := False;
                     TT.T_Type := StringL;
                     TT.Buf := Buf;
-                    Cls := True;
+                    Set_Unbounded_String(Buf, "");
                     
                     if C = ''' then
                         TT.T_Type := CharL;
@@ -170,7 +165,7 @@ package body Lex is
                     when ' ' | Character'Val(9) =>
                         if Length(Buf) > 0 then
                             TT := To_Token(To_String(Buf));
-                            Cls := True;
+                            Set_Unbounded_String(Buf, "");
                             return TT;
                         end if;
                     
@@ -182,7 +177,7 @@ package body Lex is
                         if Length(Buf) > 0 then
                             NextToken := TT;
                             TT := To_Token(To_String(Buf));
-                            Cls := True;
+                            Set_Unbounded_String(Buf, "");
                             return TT;
                         end if;
                         return TT;

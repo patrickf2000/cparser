@@ -20,7 +20,6 @@ package Lex is
     -- Global control variables needed by the lexer
     NextToken : Token;
     UndoToken : Token;
-    Cls : Boolean := False;
     In_Quote : Boolean := False;
     
     Buf : Unbounded_String;

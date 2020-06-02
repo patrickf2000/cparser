@@ -144,7 +144,7 @@ package body Parser is
                     Type_Token := Current_Token;
                     Name_Token := Get_Token(File);
                 
-                    Build_Var_Dec(Type_Token.T_Type, Buf, False);
+                    Build_Var_Dec(Type_Token.T_Type, Name_Token.Buf, False);
                 end if;
                 
                 Current_Token := Get_Token(File);
@@ -305,7 +305,8 @@ package body Parser is
                     -- Could be variable assignment or function call
                 when Id =>
                     declare
-                        Name : Unbounded_String := Buf;
+                        Name : Unbounded_String := Current_Token.Buf;
+                        Ln_No : Positive_Count := Line(File);
                     begin
                         if To_String(Name) = "#include" then
                             while Current_Token.T_Type /= NewLn loop
@@ -319,7 +320,8 @@ package body Parser is
                             elsif Current_Token.T_Type = Assign then
                                 Build_Var_Assign(Name);
                             else
-                                Syntax_Error("Expected variable declaration or function call.");
+                                Syntax_Error("Expected variable declaration or function call.",
+                                            Ln_No'Image);
                             end if;
                         end if;
                     end;
