@@ -18,6 +18,8 @@ package body Lex is
         -- Local variables
         C : Character;
         TT : Token;
+        Buffer : Unbounded_String;
+        In_Quote : Boolean := False;
         
         -- Converts a string to a token
         function To_Token(Input : String) return Token is
